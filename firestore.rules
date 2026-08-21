@@ -40,8 +40,8 @@ service cloud.firestore {
 
     match /memories/{memoryId} {
 
-      // El álbum solo está disponible para usuarios autenticados.
-      allow read: if request.auth != null;
+      // El álbum se puede visualizar sin iniciar sesión.
+      allow read: if true;
 
       // Solo un usuario autenticado puede crear un recuerdo, y el
       // email del autor debe coincidir con el del usuario autenticado
