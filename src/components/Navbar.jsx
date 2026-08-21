@@ -24,7 +24,7 @@ export const Navbar = ({
   setSearchQuery,
   totalMemories
 }) => {
-  const { currentUser, logout, isOwner } = useAuth();
+  const { currentUser, logout, isOwner, canUpload } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
@@ -114,7 +114,7 @@ export const Navbar = ({
             )}
 
             {/* Upload Button */}
-            {currentUser ? (
+            {currentUser && canUpload ? (
               <button
                 onClick={onOpenUpload}
                 className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:shadow-lg hover:shadow-rose-500/30 transition transform active:scale-95 cursor-pointer"

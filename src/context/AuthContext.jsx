@@ -7,7 +7,8 @@ import {
   onAuthStateChanged,
   updateProfile
 } from 'firebase/auth';
-import { auth, googleProvider, isFirebaseConfigured } from '../firebase/config';
+import { auth, db, googleProvider, isFirebaseConfigured } from '../firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -66,6 +67,7 @@ export const AuthProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(true);
   const isOwner = currentUser?.email?.toLowerCase() === OWNER_EMAIL;
+  const [canUpload, setCanUpload] = useState(false);
 
   // Persist session helper
   const persistSession = (user) => {
@@ -94,14 +96,19 @@ export const AuthProvider = ({ children }) => {
         if (firebaseUser) {
           const formatted = formatFirebaseUser(firebaseUser);
           persistSession(formatted);
+          getDoc(doc(db, 'authorizedUsers', firebaseUser.uid))
+            .then((snapshot) => setCanUpload(firebaseUser.email?.toLowerCase() === OWNER_EMAIL || snapshot.exists()))
+            .catch(() => setCanUpload(firebaseUser.email?.toLowerCase() === OWNER_EMAIL));
         } else {
           persistSession(null);
+          setCanUpload(false);
         }
         setLoading(false);
       });
       return unsubscribe;
     } else {
       setLoading(false);
+      setCanUpload(currentUser?.email?.toLowerCase() === OWNER_EMAIL);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -211,6 +218,7 @@ export const AuthProvider = ({ children }) => {
       try { await signOut(auth); } catch { /* ignore */ }
     }
     persistSession(null);
+    setCanUpload(false);
   };
 
   return (
@@ -222,6 +230,7 @@ export const AuthProvider = ({ children }) => {
       loginWithGoogle,
       logout,
       isOwner,
+      canUpload,
       isFirebaseActive: isFirebaseConfigured
     }}>
       {children}

@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, getDoc, doc } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 export const getFirebaseConfig = () => {
@@ -49,5 +49,14 @@ if (isFirebaseConfigured) {
     console.warn('Firebase no se pudo inicializar con las claves actuales. Usando modo de demostración/local.', error);
   }
 }
+
+export const getUploadPermission = async (uid) => {
+  if (!uid || !db) return false;
+  if (currentConfig.apiKey && uid) {
+    const snapshot = await getDoc(doc(db, 'authorizedUsers', uid));
+    return snapshot.exists();
+  }
+  return false;
+};
 
 export { app, auth, db, storage, googleProvider };

@@ -8,6 +8,12 @@ service cloud.firestore {
         && request.auth.token.email == 'theangelvaldez17@gmail.com';
     }
 
+    function isAuthorizedUploader() {
+      return isOwner()
+        || (request.auth != null
+          && exists(/databases/$(database)/documents/authorizedUsers/$(request.auth.uid)));
+    }
+
     function isValidLikesUpdate() {
       return request.resource.data.likes is list
         && request.resource.data.likes.size() <= 100
@@ -46,7 +52,7 @@ service cloud.firestore {
       // Solo un usuario autenticado puede crear un recuerdo, y el
       // email del autor debe coincidir con el del usuario autenticado
       // (evita que alguien publique haciéndose pasar por otra persona).
-      allow create: if request.auth != null
+      allow create: if isAuthorizedUploader()
                     && request.resource.data.author.email == request.auth.token.email;
 
        // El propietario puede editar cualquier campo. Los demás usuarios
@@ -61,8 +67,13 @@ service cloud.firestore {
 
        // El propietario puede borrar cualquier recuerdo; los demás no pueden
        // modificar ni borrar fotos publicadas.
-       allow delete: if isOwner();
+       allow delete: if isAuthorizedUploader();
     }
+
+     match /authorizedUsers/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if isOwner();
+     }
 
     // Bloquea todo lo demás por defecto.
     match /{document=**} {

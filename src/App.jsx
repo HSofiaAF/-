@@ -20,7 +20,7 @@ import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Star, Calendar } from 
 import { AudioPlayer } from './components/AudioPlayer';
 
 export function App() {
-  const { currentUser, isOwner, isFirebaseActive } = useAuth();
+  const { currentUser, isOwner, canUpload, isFirebaseActive } = useAuth();
   
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -192,11 +192,17 @@ export function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         {/* Welcome Hero for HSofiaAF */}
-        <section className="relative rounded-[28px] p-6 sm:p-10 bg-gradient-to-br from-rose-500/10 via-pink-500/10 to-amber-500/10 border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] mb-6 overflow-hidden">
+        <section className="relative memory-hero rounded-[28px] p-6 sm:p-10 border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] mb-6 overflow-hidden">
           
-          {/* Ambient background glow decoration */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-rose-400/20 to-amber-300/20 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-          <div className="absolute bottom-0 left-0 w-60 h-60 bg-gradient-to-tr from-pink-400/15 to-indigo-300/15 rounded-full blur-2xl pointer-events-none -ml-16 -mb-16" />
+          <div className="hero-grid pointer-events-none" />
+          <div className="hero-orbit pointer-events-none" aria-hidden="true">
+            <div className="hero-orbit__ring hero-orbit__ring--one" />
+            <div className="hero-orbit__ring hero-orbit__ring--two" />
+            <div className="hero-orbit__core"><Heart className="w-8 h-8 fill-current" /></div>
+            <Sparkles className="hero-float hero-float--one" />
+            <Heart className="hero-float hero-float--two fill-current" />
+            <Heart className="hero-float hero-float--three" />
+          </div>
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="max-w-2xl">
@@ -240,7 +246,7 @@ export function App() {
                 </button>
               )}
 
-              {currentUser && (
+              {currentUser && canUpload && (
                 <button
                   onClick={() => setIsUploadOpen(true)}
                   className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-rose-500/25 hover:shadow-xl hover:shadow-rose-500/35 transition transform active:scale-95 cursor-pointer"
