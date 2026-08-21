@@ -8,6 +8,36 @@ service cloud.firestore {
         && request.auth.token.email == 'theangelvaldez17@gmail.com';
     }
 
+    function isValidLikesUpdate() {
+      return request.resource.data.likes is list
+        && request.resource.data.likes.size() <= 100
+        && resource.data.likes is list
+        && request.resource.data.likes.hasAll(resource.data.likes)
+        && request.resource.data.likes.size() == resource.data.likes.size() + 1
+        && request.resource.data.likes.hasAll([request.auth.token.email]);
+    }
+
+    function isValidUnlikeUpdate() {
+      return request.resource.data.likes is list
+        && resource.data.likes is list
+        && resource.data.likes.size() <= 100
+        && request.resource.data.likes.size() + 1 == resource.data.likes.size()
+        && resource.data.likes.hasAll([request.auth.token.email])
+        && resource.data.likes.hasAll(request.resource.data.likes);
+    }
+
+    function isValidCommentUpdate() {
+      return request.resource.data.comments is list
+        && request.resource.data.comments.size() <= 100
+        && resource.data.comments is list
+        && request.resource.data.comments.hasAll(resource.data.comments)
+        && request.resource.data.comments.size() == resource.data.comments.size() + 1
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].authorEmail == request.auth.token.email
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].text is string
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].text.size() > 0
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].text.size() <= 1000;
+    }
+
     match /memories/{memoryId} {
 
       // El álbum solo está disponible para usuarios autenticados.
@@ -21,10 +51,13 @@ service cloud.firestore {
 
        // El propietario puede editar cualquier campo. Los demás usuarios
        // autenticados solo pueden reaccionar o dejar comentarios.
-        allow update: if isOwner()
+       allow update: if isOwner()
           || (request.auth != null
-                    && request.resource.data.diff(resource.data).affectedKeys()
-              .hasOnly(['likes', 'comments']));
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+            && (isValidLikesUpdate() || isValidUnlikeUpdate()))
+          || (request.auth != null
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['comments'])
+            && isValidCommentUpdate());
 
        // El propietario puede borrar cualquier recuerdo; los demás no pueden
        // modificar ni borrar fotos publicadas.
