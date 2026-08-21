@@ -18,6 +18,7 @@ import {
 import { useAuth } from './context/AuthContext';
 import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Star, Calendar } from 'lucide-react';
 import { AudioPlayer } from './components/AudioPlayer';
+import { subscribeToPresence, updatePresence } from './firebase/services';
 
 export function App() {
   const { currentUser, isOwner, canUpload, isFirebaseActive } = useAuth();
@@ -30,6 +31,7 @@ export function App() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sortOrder, setSortOrder] = useState('newest');
   const [searchQuery, setSearchQuery] = useState('');
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -52,6 +54,23 @@ export function App() {
   useEffect(() => {
     loadData();
   }, [currentUser?.uid]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      setOnlineUsers([]);
+      return undefined;
+    }
+
+    updatePresence(currentUser).catch(() => {});
+    const unsubscribe = subscribeToPresence(setOnlineUsers);
+    const heartbeat = window.setInterval(() => updatePresence(currentUser).catch(() => {}), 60000);
+
+    if (!isFirebaseActive) setOnlineUsers([currentUser]);
+    return () => {
+      unsubscribe();
+      window.clearInterval(heartbeat);
+    };
+  }, [currentUser, isFirebaseActive]);
 
   const handleUploadSuccess = async (newMemoryData) => {
     if (!currentUser) {
@@ -186,6 +205,7 @@ export function App() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         totalMemories={memories.length}
+        onlineUsers={onlineUsers}
       />
 
       {/* Main Content Area */}
@@ -193,6 +213,16 @@ export function App() {
         
         {/* Welcome Hero for HSofiaAF */}
         <section className="relative memory-hero rounded-[28px] p-6 sm:p-10 border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] mb-6 overflow-hidden">
+          <video
+            className="hero-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden="true"
+            src={`${import.meta.env.BASE_URL}sofia-bailando.mp4`}
+          />
+          <div className="hero-video-overlay" />
           
           <div className="hero-grid pointer-events-none" />
           <div className="hero-orbit pointer-events-none" aria-hidden="true">
@@ -343,6 +373,7 @@ export function App() {
         onClose={() => setSelectedMemory(null)}
         onLike={handleLike}
         onAddComment={handleAddComment}
+        currentUser={currentUser}
       />
 
       <UploadModal

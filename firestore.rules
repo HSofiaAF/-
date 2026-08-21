@@ -75,6 +75,12 @@ service cloud.firestore {
       allow write: if isOwner();
      }
 
+    match /presence/{userId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
     // Bloquea todo lo demás por defecto.
     match /{document=**} {
       allow read, write: if false;

@@ -9,7 +9,9 @@ import {
   orderBy, 
   serverTimestamp,
   arrayUnion,
-  arrayRemove
+  arrayRemove,
+  onSnapshot,
+  setDoc
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage, isFirebaseConfigured } from './config';
@@ -102,6 +104,32 @@ export const fetchMemories = async () => {
     console.warn('Error fetching from Firestore, falling back to local:', error);
     return getLocalMemories();
   }
+};
+
+export const subscribeToPresence = (onUsersChanged) => {
+  if (!isFirebaseConfigured || !db) return () => {};
+
+  const presenceQuery = query(collection(db, 'presence'), orderBy('lastSeen', 'desc'));
+  return onSnapshot(presenceQuery, (snapshot) => {
+    const now = Date.now();
+    const users = snapshot.docs
+      .map((presenceDoc) => ({ id: presenceDoc.id, ...presenceDoc.data() }))
+      .filter((user) => user.lastSeen?.toMillis && now - user.lastSeen.toMillis() < 120000);
+    onUsersChanged(users);
+  }, (error) => {
+    console.warn('No se pudo escuchar la presencia familiar:', error);
+  });
+};
+
+export const updatePresence = async (user) => {
+  if (!isFirebaseConfigured || !db || !user?.uid) return;
+  await setDoc(doc(db, 'presence', user.uid), {
+    uid: user.uid,
+    name: user.name || user.email?.split('@')[0] || 'Familia',
+    email: user.email || '',
+    avatar: user.avatar || '',
+    lastSeen: serverTimestamp()
+  }, { merge: true });
 };
 
 // 2. Subir nuevo recuerdo con foto

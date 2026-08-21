@@ -9,7 +9,8 @@ import {
   User, 
   Settings, 
   Sparkles,
-  Play
+  Play,
+  Users
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -22,10 +23,12 @@ export const Navbar = ({
   onOpenSlideshow,
   searchQuery,
   setSearchQuery,
-  totalMemories
+  totalMemories,
+  onlineUsers = []
 }) => {
   const { currentUser, logout, isOwner, canUpload } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showOnlineUsers, setShowOnlineUsers] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 w-full glass border-b border-white/60 shadow-xs">
@@ -102,6 +105,30 @@ export const Navbar = ({
             </div>
 
             {/* Slideshow Button */}
+            <div className="relative">
+              <button
+                onClick={() => setShowOnlineUsers(!showOnlineUsers)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition cursor-pointer"
+                title="Familia conectada ahora"
+              >
+                <span className="online-dot" />
+                <Users className="w-3.5 h-3.5" />
+                <span>{onlineUsers.length} en línea</span>
+              </button>
+              {showOnlineUsers && (
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl glass-card border border-slate-200/80 shadow-xl p-3 z-50">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Familia conectada</p>
+                  {onlineUsers.length ? onlineUsers.map((user) => (
+                    <div key={user.uid || user.email} className="flex items-center gap-2 py-1.5">
+                      <img src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.name}`} alt="" className="w-7 h-7 rounded-full" />
+                      <span className="text-xs font-bold text-slate-700 truncate">{user.name}</span>
+                      <span className="online-dot ml-auto" />
+                    </div>
+                  )) : <p className="text-xs text-slate-400">Nadie conectado ahora.</p>}
+                </div>
+              )}
+            </div>
+
             {totalMemories > 0 && (
               <button
                 onClick={onOpenSlideshow}

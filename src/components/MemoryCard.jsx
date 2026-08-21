@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Heart, MessageCircle, Calendar, Trash2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
+import { getLikePeople } from '../utils/people';
 
 // Emotion tag palette – mapped from tags or category
 const EMOTION_COLORS = {
@@ -18,7 +19,9 @@ const getEmotionStyle = (category) =>
 
 export const MemoryCard = ({ memory, onSelect, onLike, onDelete }) => {
   const { currentUser, isOwner } = useAuth();
+  const [showLikes, setShowLikes] = useState(false);
   const hasLiked = currentUser && memory.likes?.includes(currentUser.email);
+  const likePeople = getLikePeople(memory, currentUser);
   const canDelete = isOwner;
 
   const handleLike = (e) => {
@@ -90,6 +93,20 @@ export const MemoryCard = ({ memory, onSelect, onLike, onDelete }) => {
             {memory.category || 'Momento'}
           </span>
         </div>
+
+        {likePeople.length > 0 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowLikes(!showLikes); }}
+            className="absolute bottom-3 left-3 z-10 px-2 py-1 rounded-full bg-black/50 text-white text-[10px] font-bold backdrop-blur-md cursor-pointer"
+          >
+            {showLikes ? 'Ocultar' : 'Ver quién'}
+          </button>
+        )}
+        {showLikes && (
+          <div className="absolute bottom-11 left-3 right-3 z-20 rounded-xl bg-white/95 p-2 shadow-lg text-[11px] text-slate-700" onClick={(e) => e.stopPropagation()}>
+            {likePeople.map((person) => <div key={person.email} className="py-0.5 font-semibold">♥ {person.name}</div>)}
+          </div>
+        )}
 
         {/* Delete button */}
         {canDelete && onDelete && (

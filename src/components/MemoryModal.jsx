@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Heart, MessageCircle, Send, Calendar, Share2, Sparkles, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
+import { getLikePeople } from '../utils/people';
 
 export const MemoryModal = ({ memory, onClose, onLike, onAddComment }) => {
   const { currentUser } = useAuth();
@@ -11,6 +12,7 @@ export const MemoryModal = ({ memory, onClose, onLike, onAddComment }) => {
   if (!memory) return null;
 
   const hasLiked = currentUser && memory.likes?.includes(currentUser.email);
+  const likePeople = getLikePeople(memory, currentUser);
 
   const handleLike = () => {
     if (!currentUser) return;
@@ -177,6 +179,12 @@ export const MemoryModal = ({ memory, onClose, onLike, onAddComment }) => {
                 <span>{memory.comments?.length || 0} mensajes</span>
               </div>
             </div>
+            {likePeople.length > 0 && (
+              <div className="mb-4 rounded-xl bg-rose-50/70 border border-rose-100 px-3 py-2">
+                <p className="text-[10px] font-black uppercase tracking-wider text-rose-500 mb-1">Les gusta este recuerdo</p>
+                <p className="text-xs font-semibold text-slate-700">{likePeople.map((person) => person.name).join(', ')}</p>
+              </div>
+            )}
 
             {/* Comments List */}
             <div className="space-y-3 mt-4">
