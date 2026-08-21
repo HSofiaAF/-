@@ -147,6 +147,13 @@ export const createMemory = async ({ title, description, date, category, tags, i
       databaseConfigured: Boolean(db)
     });
 
+    if (isFirebaseConfigured && db) {
+      if (error?.code === 'permission-denied') {
+        throw new Error('No tienes permiso para subir recuerdos. Pide al propietario que añada tu UID en authorizedUsers.');
+      }
+      throw error;
+    }
+
     const base64Url = await readFileAsDataUrl(imageFile);
     const newMemory = {
       id: 'mem-' + Date.now(),
