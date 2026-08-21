@@ -20,7 +20,7 @@ import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Star, Calendar } from 
 import { AudioPlayer } from './components/AudioPlayer';
 
 export function App() {
-  const { currentUser, isFirebaseActive } = useAuth();
+  const { currentUser, isOwner, isFirebaseActive } = useAuth();
   
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,6 +54,10 @@ export function App() {
   }, []);
 
   const handleUploadSuccess = async (newMemoryData) => {
+    if (!currentUser) {
+      setIsAuthOpen(true);
+      return;
+    }
     const saved = await createMemory(newMemoryData);
     setMemories(prev => [saved, ...prev]);
   };
@@ -88,6 +92,10 @@ export function App() {
   };
 
   const handleAddComment = async (memoryId, commentData) => {
+    if (!currentUser) {
+      setIsAuthOpen(true);
+      return;
+    }
     const newComment = await addCommentToMemory(memoryId, commentData);
     
     setMemories(prev => prev.map(m => {
@@ -106,6 +114,7 @@ export function App() {
   };
 
   const handleDelete = async (memoryId, imageUrl) => {
+    if (!isOwner) return;
     await deleteMemory(memoryId, imageUrl);
     setMemories(prev => prev.filter(m => m.id !== memoryId));
     if (selectedMemory?.id === memoryId) {
@@ -284,12 +293,14 @@ export function App() {
             <p className="text-xs text-slate-500 mb-5">
               Prueba con otra categoría o añade el primer momento inolvidable de Sofia.
             </p>
-            <button
-              onClick={() => setIsUploadOpen(true)}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs font-bold shadow-md shadow-rose-500/25 transition cursor-pointer"
-            >
-              Subir nuevo recuerdo
-            </button>
+            {currentUser && (
+              <button
+                onClick={() => setIsUploadOpen(true)}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs font-bold shadow-md shadow-rose-500/25 transition cursor-pointer"
+              >
+                Subir nuevo recuerdo
+              </button>
+            )}
           </div>
         ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

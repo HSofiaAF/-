@@ -84,7 +84,8 @@ export const createMemory = async ({ title, description, date, category, tags, i
       const docRef = await addDoc(collection(db, 'memories'), newDoc);
       return { id: docRef.id, ...newDoc };
     } catch (error) {
-      console.error('Error al subir a Firebase, guardando localmente:', error);
+      console.error('Error al subir a Firebase:', error);
+      throw error;
     }
   }
 
@@ -135,6 +136,7 @@ export const toggleLikeMemory = async (memoryId, userEmail) => {
       }
     } catch (error) {
       console.error('Error toggling like in Firebase:', error);
+      throw error;
     }
   }
 
@@ -174,6 +176,7 @@ export const addCommentToMemory = async (memoryId, comment) => {
       return newComment;
     } catch (error) {
       console.error('Error adding comment to Firebase:', error);
+      throw error;
     }
   }
 
@@ -204,6 +207,7 @@ export const deleteMemory = async (memoryId, imageUrl) => {
       return true;
     } catch (error) {
       console.error('Error deleting memory from Firebase:', error);
+      throw error;
     }
   }
 

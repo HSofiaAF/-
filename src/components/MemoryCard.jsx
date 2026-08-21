@@ -17,12 +17,9 @@ const getEmotionStyle = (category) =>
   EMOTION_COLORS[category] || { bg: '#fff1f2', border: '#fecdd3', text: '#881337' };
 
 export const MemoryCard = ({ memory, onSelect, onLike, onDelete }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isOwner } = useAuth();
   const hasLiked = currentUser && memory.likes?.includes(currentUser.email);
-  const isAuthor = currentUser && (
-    memory.author?.email === currentUser.email ||
-    memory.author?.name === currentUser.name
-  );
+  const canDelete = isOwner;
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -95,7 +92,7 @@ export const MemoryCard = ({ memory, onSelect, onLike, onDelete }) => {
         </div>
 
         {/* Delete button */}
-        {isAuthor && onDelete && (
+        {canDelete && onDelete && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -193,18 +190,25 @@ export const MemoryCard = ({ memory, onSelect, onLike, onDelete }) => {
           className="flex items-center justify-between pt-3 mt-1"
           style={{ borderTop: '1px solid #f1f5f9' }}
         >
-          <button
-            onClick={handleLike}
-            className={`flex items-center gap-1.5 text-xs font-bold transition-transform active:scale-125 cursor-pointer select-none ${
-              hasLiked ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'
-            }`}
-            title={hasLiked ? 'Quitar corazón' : 'Dar corazón'}
-          >
-            <Heart
-              className={`w-4 h-4 transition-all duration-150 ${hasLiked ? 'fill-rose-500 text-rose-500 scale-110' : ''}`}
-            />
-            <span>{memory.likes?.length || 0}</span>
-          </button>
+          {currentUser ? (
+            <button
+              onClick={handleLike}
+              className={`flex items-center gap-1.5 text-xs font-bold transition-transform active:scale-125 cursor-pointer select-none ${
+                hasLiked ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'
+              }`}
+              title={hasLiked ? 'Quitar corazón' : 'Dar corazón'}
+            >
+              <Heart
+                className={`w-4 h-4 transition-all duration-150 ${hasLiked ? 'fill-rose-500 text-rose-500 scale-110' : ''}`}
+              />
+              <span>{memory.likes?.length || 0}</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+              <Heart className="w-4 h-4" />
+              <span>{memory.likes?.length || 0}</span>
+            </div>
+          )}
 
           <div className="flex items-center gap-1 text-xs text-slate-400 font-semibold">
             <MessageCircle className="w-3.5 h-3.5" />

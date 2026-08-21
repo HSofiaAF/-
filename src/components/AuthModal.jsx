@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { X, Heart, Mail, Lock, User, AlertCircle, Sparkles, Users } from 'lucide-react';
+import { X, Heart, Mail, Lock, User, AlertCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const AuthModal = ({ isOpen, onClose }) => {
-  const { loginWithEmail, registerWithEmail, loginWithGoogle, switchDemoUser } = useAuth();
+  const { loginWithEmail, registerWithEmail, loginWithGoogle } = useAuth();
 
   const [tab, setTab] = useState('login'); // 'login' | 'register'
   const [name, setName] = useState('');
@@ -54,11 +54,6 @@ export const AuthModal = ({ isOpen, onClose }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickAccess = (type) => {
-    switchDemoUser(type);
-    onClose();
   };
 
   return (
@@ -311,43 +306,6 @@ export const AuthModal = ({ isOpen, onClose }) => {
                 : tab === 'register' ? '🎉 Crear mi Cuenta' : '🔑 Iniciar Sesión'}
             </button>
           </form>
-
-          {/* ── Quick demo access (family shortcuts) ── */}
-          <div
-            className="p-4 rounded-2xl"
-            style={{ background: '#fffbeb', border: '1px solid #fde68a' }}
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="w-4 h-4" style={{ color: '#d97706' }} />
-              <span className="text-xs font-bold" style={{ color: '#92400e' }}>
-                Acceso Rápido para la Familia
-              </span>
-            </div>
-            <p className="text-xs mb-3" style={{ color: '#78350f' }}>
-              Haz clic para entrar directamente como miembro de demostración (sin contraseña):
-            </p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickAccess('papa')}
-                className="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer"
-                style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e' }}
-              >
-                👨 Papá (Alex)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickAccess('mama')}
-                className="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer"
-                style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e' }}
-              >
-                👩 Mamá
-              </button>
-            </div>
-            <p className="text-xs mt-2" style={{ color: '#a16207' }}>
-              💡 Contraseña demo: <code className="font-mono">familia2026</code>
-            </p>
-          </div>
 
         </div>
       </div>

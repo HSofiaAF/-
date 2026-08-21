@@ -11,6 +11,8 @@ import { auth, googleProvider, isFirebaseConfigured } from '../firebase/config';
 
 const AuthContext = createContext();
 
+export const OWNER_EMAIL = 'theangelvaldez17@gmail.com';
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Local User Database (persisted in localStorage when Firebase is not active)
 // ──────────────────────────────────────────────────────────────────────────────
@@ -30,43 +32,6 @@ const getLocalUsers = () => {
 const saveLocalUsers = (users) => {
   localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
 };
-
-// Pre-seeded demo family members (available immediately, no registration needed)
-const DEMO_USERS = {
-  'alex@familia.com': {
-    uid: 'demo-papa',
-    name: 'Papá (Alex)',
-    email: 'alex@familia.com',
-    password: 'familia2026',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alex',
-    role: 'Papá',
-    isDemo: true
-  },
-  'mama@familia.com': {
-    uid: 'demo-mama',
-    name: 'Mamá',
-    email: 'mama@familia.com',
-    password: 'familia2026',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Mama',
-    role: 'Mamá',
-    isDemo: true
-  }
-};
-
-// Initialize local DB with demo users if empty
-const initLocalDB = () => {
-  const existing = getLocalUsers();
-  let changed = false;
-  for (const [email, user] of Object.entries(DEMO_USERS)) {
-    if (!existing[email]) {
-      existing[email] = user;
-      changed = true;
-    }
-  }
-  if (changed) saveLocalUsers(existing);
-};
-
-initLocalDB();
 
 // Translate Firebase error codes to Spanish
 const translateFirebaseError = (code) => {
@@ -100,6 +65,7 @@ export const AuthProvider = ({ children }) => {
     }
   });
   const [loading, setLoading] = useState(true);
+  const isOwner = currentUser?.email?.toLowerCase() === OWNER_EMAIL;
 
   // Persist session helper
   const persistSession = (user) => {
@@ -234,19 +200,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error(translateFirebaseError(err.code));
       }
     }
-    // Local fallback: use Papa demo
-    const papaDemoProfile = { ...DEMO_USERS['alex@familia.com'] };
-    delete papaDemoProfile.password;
-    persistSession(papaDemoProfile);
-    return { user: papaDemoProfile };
-  };
-
-  // ── One-tap switch for demo / quick family access ────────────────────────
-  const switchDemoUser = (type) => {
-    const key = type === 'papa' ? 'alex@familia.com' : 'mama@familia.com';
-    const user = { ...DEMO_USERS[key] };
-    delete user.password;
-    persistSession(user);
+    throw new Error('Firebase no está configurado. No se puede iniciar sesión ahora.');
   };
 
   // ── Logout ───────────────────────────────────────────────────────────────
@@ -265,7 +219,7 @@ export const AuthProvider = ({ children }) => {
       registerWithEmail,
       loginWithGoogle,
       logout,
-      switchDemoUser,
+      isOwner,
       isFirebaseActive: isFirebaseConfigured
     }}>
       {children}

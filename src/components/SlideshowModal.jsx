@@ -232,21 +232,22 @@ export const SlideshowModal = ({ isOpen, onClose, memories = [], onLike, current
           </div>
 
           {/* Like button */}
-          <button
-            onClick={handleLike}
-            disabled={!currentUser}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs transition active:scale-90 cursor-pointer shrink-0"
-            style={{
-              background: hasLiked
-                ? 'linear-gradient(135deg, #e11d48, #f43f5e)'
-                : 'rgba(255,255,255,0.1)',
-              color: hasLiked ? 'white' : 'white',
-              boxShadow: hasLiked ? '0 4px 16px rgba(244,63,94,0.45)' : 'none'
-            }}
-          >
-            <Heart className={`w-4 h-4 ${hasLiked ? 'fill-white' : ''}`} />
-            <span>{current.likes?.length || 0}</span>
-          </button>
+          {currentUser && (
+            <button
+              onClick={handleLike}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs transition active:scale-90 cursor-pointer shrink-0"
+              style={{
+                background: hasLiked
+                  ? 'linear-gradient(135deg, #e11d48, #f43f5e)'
+                  : 'rgba(255,255,255,0.1)',
+                color: 'white',
+                boxShadow: hasLiked ? '0 4px 16px rgba(244,63,94,0.45)' : 'none'
+              }}
+            >
+              <Heart className={`w-4 h-4 ${hasLiked ? 'fill-white' : ''}`} />
+              <span>{current.likes?.length || 0}</span>
+            </button>
+          )}
         </div>
 
         {/* Progress dots */}
