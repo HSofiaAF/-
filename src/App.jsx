@@ -17,6 +17,7 @@ import {
 } from './firebase/services';
 import { useAuth } from './context/AuthContext';
 import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Star, Calendar } from 'lucide-react';
+import { AudioPlayer } from './components/AudioPlayer';
 
 export function App() {
   const { currentUser, isFirebaseActive } = useAuth();
@@ -350,6 +351,9 @@ export function App() {
         onLike={handleLike}
         currentUser={currentUser}
       />
+
+      {/* Floating ambient music player */}
+      <AudioPlayer />
 
     </div>
   );

@@ -1,32 +1,42 @@
 import React, { useState } from 'react';
-import { X, Heart, Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { X, Heart, Mail, Lock, User, AlertCircle, Sparkles, Users } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const AuthModal = ({ isOpen, onClose }) => {
-  const { loginWithEmail, registerWithEmail, loginWithGoogle } = useAuth();
-  
-  const [isRegistering, setIsRegistering] = useState(false);
+  const { loginWithEmail, registerWithEmail, loginWithGoogle, switchDemoUser } = useAuth();
+
+  const [tab, setTab] = useState('login'); // 'login' | 'register'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Papá');
+  const [role, setRole] = useState('Familia');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
+  const reset = () => {
+    setName(''); setEmail(''); setPassword(''); setRole('Familia');
+    setError(''); setSuccess('');
+  };
+
+  const switchTab = (t) => { setTab(t); reset(); };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError(''); setSuccess('');
     setLoading(true);
-
     try {
-      if (isRegistering) {
+      if (tab === 'register') {
+        if (!name.trim()) throw new Error('Por favor escribe tu nombre o apodo familiar.');
         await registerWithEmail(name, email, password, role);
+        setSuccess('¡Cuenta creada! Ahora ya puedes guardar recuerdos. 🎉');
+        setTimeout(onClose, 1500);
       } else {
         await loginWithEmail(email, password);
+        onClose();
       }
-      onClose();
     } catch (err) {
       setError(err.message || 'Error de autenticación. Verifica tus datos.');
     } finally {
@@ -34,58 +44,135 @@ export const AuthModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setError('');
+  const handleGoogle = async () => {
+    setError(''); setLoading(true);
     try {
       await loginWithGoogle();
       onClose();
     } catch (err) {
-      setError('Error al iniciar sesión con Google.');
+      setError(err.message || 'No se pudo iniciar sesión con Google.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleQuickAccess = (type) => {
+    switchDemoUser(type);
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-      
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/80 z-10">
-        
-        {/* Header */}
-        <div className="relative p-6 bg-gradient-to-br from-rose-500 via-pink-500 to-amber-400 text-white text-center">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(15,10,5,0.75)', backdropFilter: 'blur(8px)' }}
+    >
+      <div
+        className="relative w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"
+        style={{ background: 'white', border: '1px solid rgba(255,255,255,0.8)' }}
+      >
+        {/* ── Gradient Header ─────────────────────────────────────────── */}
+        <div
+          className="relative p-8 text-white text-center"
+          style={{ background: 'linear-gradient(135deg, #e11d48 0%, #f43f5e 45%, #f59e0b 100%)' }}
+        >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition cursor-pointer"
+            className="absolute top-4 right-4 p-2 rounded-full transition cursor-pointer"
+            style={{ background: 'rgba(0,0,0,0.2)' }}
+            title="Cerrar"
           >
             <X className="w-4 h-4" />
           </button>
-          
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg mb-3">
-            <Heart className="w-7 h-7 fill-white" />
+
+          <div
+            className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center shadow-lg mb-4"
+            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}
+          >
+            <Heart className="w-8 h-8 fill-white" />
           </div>
-          <h3 className="text-xl font-extrabold">
-            {isRegistering ? 'Crear Cuenta Familiar' : 'Bienvenido a Casa'}
+
+          <h3 className="text-2xl font-extrabold tracking-tight">
+            {tab === 'login' ? 'Bienvenido a Casa 🏠' : 'Únete a la Familia 💛'}
           </h3>
-          <p className="text-xs text-rose-100 mt-1">
-            {isRegistering 
-              ? 'Únete para guardar y compartir momentos inolvidables' 
-              : 'Ingresa para ver y subir fotos de tu pequeña'}
+          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
+            {tab === 'login'
+              ? 'Ingresa para ver y guardar momentos únicos'
+              : 'Crea tu cuenta y empieza a compartir recuerdos'}
           </p>
+
+          {/* Tab Toggle in header */}
+          <div
+            className="flex mx-auto mt-5 rounded-2xl overflow-hidden text-sm font-bold"
+            style={{
+              background: 'rgba(0,0,0,0.2)',
+              width: 'fit-content',
+              backdropFilter: 'blur(4px)'
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => switchTab('login')}
+              className="px-5 py-2 transition cursor-pointer"
+              style={{
+                background: tab === 'login' ? 'rgba(255,255,255,0.3)' : 'transparent',
+                color: 'white',
+                borderRadius: '1rem'
+              }}
+            >
+              Iniciar Sesión
+            </button>
+            <button
+              type="button"
+              onClick={() => switchTab('register')}
+              className="px-5 py-2 transition cursor-pointer"
+              style={{
+                background: tab === 'register' ? 'rgba(255,255,255,0.3)' : 'transparent',
+                color: 'white',
+                borderRadius: '1rem'
+              }}
+            >
+              Registrarse
+            </button>
+          </div>
         </div>
 
-        {/* Form */}
-        <div className="p-6">
-          
+        {/* ── Body ─────────────────────────────────────────────────────── */}
+        <div className="p-6 space-y-4">
+
+          {/* Alert: error */}
           {error && (
-            <div className="mb-4 flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div
+              className="flex items-start gap-2 p-3 rounded-xl text-sm"
+              style={{ background: '#fff1f2', border: '1px solid #fecdd3', color: '#be123c' }}
+            >
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
-          {/* Quick Google sign in */}
+          {/* Alert: success */}
+          {success && (
+            <div
+              className="flex items-center gap-2 p-3 rounded-xl text-sm"
+              style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#15803d' }}
+            >
+              <Sparkles className="w-4 h-4 shrink-0" />
+              <span>{success}</span>
+            </div>
+          )}
+
+          {/* ── Google sign-in ── */}
           <button
             type="button"
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 transition mb-4 shadow-2xs cursor-pointer"
+            onClick={handleGoogle}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl text-sm font-semibold transition cursor-pointer"
+            style={{
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              color: '#334155',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)'
+            }}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -96,85 +183,174 @@ export const AuthModal = ({ isOpen, onClose }) => {
             Continuar con Google
           </button>
 
-          <div className="relative flex items-center justify-center my-4">
-            <div className="border-t border-slate-200 w-full" />
-            <span className="bg-white px-3 text-xs text-slate-400 font-medium absolute">o con correo</span>
+          {/* Divider */}
+          <div className="relative flex items-center">
+            <div className="flex-1" style={{ borderTop: '1px solid #e2e8f0' }} />
+            <span className="px-3 text-xs" style={{ color: '#94a3b8', background: 'white', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+              o con correo
+            </span>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            {isRegistering && (
+          {/* ── Form ── */}
+          <form onSubmit={handleSubmit} className="space-y-3">
+            {/* Name (register only) */}
+            {tab === 'register' && (
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">Nombre o Apodo</label>
+                <label className="block text-xs font-bold mb-1" style={{ color: '#475569' }}>
+                  Nombre o Apodo Familiar
+                </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94a3b8' }} />
                   <input
                     type="text"
                     required
-                    placeholder="Ej: Papá (Alex) o Mamá"
+                    placeholder="Ej: Papá, Mamá, Abuelita…"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white"
+                    className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl transition"
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      outline: 'none',
+                      color: '#0f172a'
+                    }}
+                    onFocus={(e) => e.target.style.border = '1px solid #f43f5e'}
+                    onBlur={(e) => e.target.style.border = '1px solid #e2e8f0'}
                   />
                 </div>
               </div>
             )}
 
+            {/* Email */}
             <div>
-              <label className="block text-xs font-bold text-slate-600 mb-1">Correo electrónico</label>
+              <label className="block text-xs font-bold mb-1" style={{ color: '#475569' }}>
+                Correo electrónico
+              </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94a3b8' }} />
                 <input
                   type="email"
                   required
                   placeholder="ejemplo@familia.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white"
+                  className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl transition"
+                  style={{
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    outline: 'none',
+                    color: '#0f172a'
+                  }}
+                  onFocus={(e) => e.target.style.border = '1px solid #f43f5e'}
+                  onBlur={(e) => e.target.style.border = '1px solid #e2e8f0'}
                 />
               </div>
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-xs font-bold text-slate-600 mb-1">Contraseña</label>
+              <label className="block text-xs font-bold mb-1" style={{ color: '#475569' }}>
+                Contraseña {tab === 'register' && <span style={{ color: '#94a3b8', fontWeight: 400 }}>(mín. 6 caracteres)</span>}
+              </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94a3b8' }} />
                 <input
                   type="password"
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white"
+                  className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl transition"
+                  style={{
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    outline: 'none',
+                    color: '#0f172a'
+                  }}
+                  onFocus={(e) => e.target.style.border = '1px solid #f43f5e'}
+                  onBlur={(e) => e.target.style.border = '1px solid #e2e8f0'}
                 />
               </div>
             </div>
 
+            {/* Role selector (register only) */}
+            {tab === 'register' && (
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: '#475569' }}>¿Quién eres en la familia?</label>
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full px-3 py-2.5 text-sm rounded-xl cursor-pointer"
+                  style={{
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    color: '#0f172a',
+                    outline: 'none'
+                  }}
+                >
+                  {['Papá', 'Mamá', 'Abuelita', 'Abuelito', 'Tía / Tío', 'Primo / Prima', 'Familia'].map(r => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm shadow-md shadow-rose-500/25 transition transform active:scale-95 mt-2 cursor-pointer"
+              className="w-full py-2.5 rounded-xl font-bold text-sm text-white transition cursor-pointer mt-1"
+              style={{
+                background: loading
+                  ? '#fb7185'
+                  : 'linear-gradient(90deg, #e11d48, #f43f5e)',
+                boxShadow: '0 4px 12px rgba(225,29,72,0.35)'
+              }}
             >
-              {loading ? 'Procesando...' : isRegistering ? 'Registrarme' : 'Iniciar Sesión'}
+              {loading
+                ? '⏳ Procesando…'
+                : tab === 'register' ? '🎉 Crear mi Cuenta' : '🔑 Iniciar Sesión'}
             </button>
           </form>
 
-          {/* Toggle Register / Login */}
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={() => { setIsRegistering(!isRegistering); setError(''); }}
-              className="text-xs font-semibold text-rose-600 hover:text-rose-700 cursor-pointer"
-            >
-              {isRegistering 
-                ? '¿Ya tienes una cuenta? Inicia sesión aquí' 
-                : '¿No tienes cuenta? Regístrate aquí'}
-            </button>
+          {/* ── Quick demo access (family shortcuts) ── */}
+          <div
+            className="p-4 rounded-2xl"
+            style={{ background: '#fffbeb', border: '1px solid #fde68a' }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Users className="w-4 h-4" style={{ color: '#d97706' }} />
+              <span className="text-xs font-bold" style={{ color: '#92400e' }}>
+                Acceso Rápido para la Familia
+              </span>
+            </div>
+            <p className="text-xs mb-3" style={{ color: '#78350f' }}>
+              Haz clic para entrar directamente como miembro de demostración (sin contraseña):
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => handleQuickAccess('papa')}
+                className="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer"
+                style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e' }}
+              >
+                👨 Papá (Alex)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickAccess('mama')}
+                className="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer"
+                style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e' }}
+              >
+                👩 Mamá
+              </button>
+            </div>
+            <p className="text-xs mt-2" style={{ color: '#a16207' }}>
+              💡 Contraseña demo: <code className="font-mono">familia2026</code>
+            </p>
           </div>
 
         </div>
-
       </div>
-
     </div>
   );
 };
