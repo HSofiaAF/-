@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, UploadCloud, Sparkles, Check, AlertCircle } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
 import confetti from 'canvas-confetti';
@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const { currentUser } = useAuth();
   const fileInputRef = useRef(null);
+  const fileSelectionRef = useRef(0);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -23,11 +24,23 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    if (!isOpen) return;
+    fileSelectionRef.current += 1;
+    setPreviewUrl(null);
+    setCompressedFile(null);
+    setCompressionStats(null);
+    setError('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const selectionId = ++fileSelectionRef.current;
 
     if (!file.type.startsWith('image/')) {
       setError('Por favor selecciona un archivo de imagen válido.');
@@ -46,6 +59,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
       };
 
       const compressed = await imageCompression(file, options);
+      if (selectionId !== fileSelectionRef.current) return;
       setCompressedFile(compressed);
 
       const compressedKB = (compressed.size / 1024).toFixed(0);
@@ -57,7 +71,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
       });
     } catch (err) {
       console.warn('Compresión omitida, usando original:', err);
-      setCompressedFile(file);
+      if (selectionId === fileSelectionRef.current) setCompressedFile(file);
     } finally {
       setIsCompressing(false);
     }
