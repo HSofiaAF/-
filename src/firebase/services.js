@@ -35,6 +35,13 @@ const saveLocalMemories = (memories) => {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(memories));
 };
 
+const withTimeout = (promise, timeoutMs, operation) => Promise.race([
+  promise,
+  new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(`La operación "${operation}" tardó demasiado. Comprueba Firebase Storage y tu conexión.`)), timeoutMs);
+  })
+]);
+
 // 1. Obtener todos los recuerdos
 export const fetchMemories = async () => {
   if (!isFirebaseConfigured || !db) {
@@ -64,8 +71,8 @@ export const createMemory = async ({ title, description, date, category, tags, i
   if (isFirebaseConfigured && storage && db) {
     try {
       const storageRef = ref(storage, `memories/${Date.now()}_${imageFile.name || 'foto.jpg'}`);
-      const snapshot = await uploadBytes(storageRef, imageFile);
-      imageUrl = await getDownloadURL(snapshot.ref);
+      const snapshot = await withTimeout(uploadBytes(storageRef, imageFile), 45000, 'subir la foto');
+      imageUrl = await withTimeout(getDownloadURL(snapshot.ref), 30000, 'obtener la foto publicada');
 
       const newDoc = {
         title,
@@ -81,11 +88,22 @@ export const createMemory = async ({ title, description, date, category, tags, i
         timestamp: serverTimestamp()
       };
 
-      const docRef = await addDoc(collection(db, 'memories'), newDoc);
+      const docRef = await withTimeout(addDoc(collection(db, 'memories'), newDoc), 30000, 'guardar el recuerdo');
       return { id: docRef.id, ...newDoc };
     } catch (error) {
-      console.error('Error al subir a Firebase:', error);
-      throw error;
+      console.error('[Firebase upload]', {
+        code: error?.code || 'client/timeout',
+        message: error?.message || error,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        storageConfigured: Boolean(storage),
+        databaseConfigured: Boolean(db)
+      });
+      const details = error?.code === 'storage/unauthorized'
+        ? 'Firebase ha rechazado la subida. Revisa que tu cuenta tenga permisos y que Storage esté inicializado.'
+        : error?.code === 'storage/unknown'
+          ? 'Firebase Storage no está disponible todavía. Abre Storage en Firebase Console y pulsa “Comenzar”.'
+          : error?.message || 'No se pudo subir la foto a Firebase.';
+      throw new Error(details);
     }
   }
 

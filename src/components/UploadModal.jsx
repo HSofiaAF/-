@@ -101,7 +101,8 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
 
       onClose();
     } catch (err) {
-      setError(err.message || 'Error al guardar el recuerdo.');
+      console.error('[UploadModal] No se pudo publicar el recuerdo:', err);
+      setError(err.message || 'No se pudo guardar el recuerdo. Revisa tu conexión e inténtalo de nuevo.');
     } finally {
       setIsUploading(false);
     }
