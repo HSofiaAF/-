@@ -49,8 +49,6 @@ const uploadToCloudinary = async (file) => {
   formData.append('file', file);
   formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
   formData.append('public_id', `recuerdo_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`);
-  formData.append('unique_filename', 'true');
-  formData.append('use_filename', 'false');
 
   const response = await withTimeout(
     fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`, {
