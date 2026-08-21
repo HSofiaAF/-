@@ -87,11 +87,9 @@ export const MemoryModal = ({ memory, onClose, onLike, onAddComment }) => {
 
         {/* Left / Top: High-Res Image with Ambient Backdrop */}
         <div className="md:w-3/5 bg-slate-950 flex items-center justify-center relative overflow-hidden group">
-          <img
-            src={memory.imageUrl}
-            alt={memory.title}
-            className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain select-none"
-          />
+          {memory.mediaType === 'video' ? (
+            <video src={memory.imageUrl} controls autoPlay playsInline className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain" />
+          ) : <img src={memory.imageUrl} alt={memory.title} className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain select-none" />}
         </div>
 
         {/* Right / Bottom: Details, Loving Notes & Comments */}

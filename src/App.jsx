@@ -62,7 +62,12 @@ export function App() {
     }
 
     updatePresence(currentUser).catch(() => {});
-    const unsubscribe = subscribeToPresence(setOnlineUsers);
+    const unsubscribe = subscribeToPresence((users) => {
+      const mergedUsers = [currentUser, ...users];
+      setOnlineUsers(mergedUsers.filter((user, index, allUsers) =>
+        allUsers.findIndex((candidate) => (candidate.uid || candidate.email) === (user.uid || user.email)) === index
+      ));
+    });
     const heartbeat = window.setInterval(() => updatePresence(currentUser).catch(() => {}), 60000);
 
     if (!isFirebaseActive) setOnlineUsers([currentUser]);

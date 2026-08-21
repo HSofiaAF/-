@@ -42,16 +42,21 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
 
     const selectionId = ++fileSelectionRef.current;
 
-    if (!file.type.startsWith('image/')) {
-      setError('Por favor selecciona un archivo de imagen válido.');
+    const isVideo = file.type.startsWith('video/');
+    if (!file.type.startsWith('image/') && !isVideo) {
+      setError('Por favor selecciona una foto o un video válido.');
       return;
     }
 
     setError('');
     setPreviewUrl(URL.createObjectURL(file));
-    setIsCompressing(true);
+    setIsCompressing(!isVideo);
 
     try {
+      if (isVideo) {
+        if (selectionId === fileSelectionRef.current) setCompressedFile(file);
+        return;
+      }
       const options = {
         maxSizeMB: 0.8,
         maxWidthOrHeight: 1920,
@@ -80,7 +85,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!compressedFile || !title.trim()) {
-      setError('Por favor agrega un título y selecciona una foto.');
+      setError('Por favor agrega un título y selecciona una foto o video.');
       return;
     }
 
@@ -159,14 +164,14 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
           {/* Photo upload zone */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-              Foto del recuerdo
+              Foto o video del recuerdo
             </label>
 
             <input
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              accept="image/*"
+              accept="image/*,video/*"
               className="hidden"
             />
 
@@ -178,16 +183,14 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
                 <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center">
                   <UploadCloud className="w-6 h-6" />
                 </div>
-                <p className="text-sm font-semibold text-slate-700">Haz clic para subir o arrastra una foto</p>
-                <p className="text-xs text-slate-400">JPG, PNG, WebP o HEIC (se optimiza automáticamente)</p>
+                <p className="text-sm font-semibold text-slate-700">Haz clic para subir una foto o video</p>
+                <p className="text-xs text-slate-400">JPG, PNG, WebP, HEIC, MP4 o WebM</p>
               </div>
             ) : (
               <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-100">
-                <img
-                  src={previewUrl}
-                  alt="Vista previa"
-                  className="w-full h-56 object-cover"
-                />
+                {compressedFile?.type?.startsWith('video/') ? (
+                  <video src={previewUrl} controls className="w-full h-56 object-cover" />
+                ) : <img src={previewUrl} alt="Vista previa" className="w-full h-56 object-cover" />}
                 
                 <button
                   type="button"

@@ -166,17 +166,9 @@ export const SlideshowModal = ({ isOpen, onClose, memories = [], onLike, current
           className="relative max-w-5xl max-h-[70vh] flex items-center justify-center z-10"
           style={{ width: '100%' }}
         >
-          <img
-            key={`img-${kenBurnsKey}`}
-            src={current.imageUrl}
-            alt={current.title}
-            className="max-h-[70vh] w-auto max-w-full rounded-2xl object-contain animate-ken-burns"
-            style={{
-              boxShadow: '0 32px 64px -16px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08)',
-              animationDuration: '14s'
-            }}
-            loading="eager"
-          />
+          {current.mediaType === 'video' ? (
+            <video key={`video-${kenBurnsKey}`} src={current.imageUrl} controls autoPlay playsInline className="max-h-[70vh] w-auto max-w-full rounded-2xl object-contain" />
+          ) : <img key={`img-${kenBurnsKey}`} src={current.imageUrl} alt={current.title} className="max-h-[70vh] w-auto max-w-full rounded-2xl object-contain animate-ken-burns" style={{ boxShadow: '0 32px 64px -16px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08)', animationDuration: '14s' }} loading="eager" />}
         </div>
 
         {/* Next button */}

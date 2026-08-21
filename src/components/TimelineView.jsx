@@ -69,11 +69,9 @@ export const TimelineView = ({ memories, onSelect, onLike }) => {
                       className="glass-card p-4 rounded-[22px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_-4px_rgba(244,63,94,0.15)] transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
                     >
                       <div className="relative aspect-16/10 rounded-2xl overflow-hidden mb-3 bg-slate-100">
-                        <img
-                          src={mem.imageUrl}
-                          alt={mem.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                        {mem.mediaType === 'video' ? (
+                          <video src={mem.imageUrl} muted loop autoPlay playsInline className="w-full h-full object-cover" />
+                        ) : <img src={mem.imageUrl} alt={mem.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />}
                         <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-950/50 text-white backdrop-blur-xs border border-white/20">
                           {mem.category}
                         </span>

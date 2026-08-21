@@ -64,12 +64,9 @@ export const MemoryCard = ({ memory, onSelect, onLike, onDelete }) => {
     >
       {/* ── Image area ───────────────────────────────────────────────── */}
       <div className="relative overflow-hidden bg-slate-100" style={{ aspectRatio: '4/3' }}>
-        <img
-          src={memory.imageUrl}
-          alt={memory.title}
-          loading="lazy"
-          className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.08]"
-        />
+        {memory.mediaType === 'video' ? (
+          <video src={memory.imageUrl} muted loop autoPlay playsInline className="w-full h-full object-cover object-center" />
+        ) : <img src={memory.imageUrl} alt={memory.title} loading="lazy" className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.08]" />}
 
         {/* Gradient overlay */}
         <div

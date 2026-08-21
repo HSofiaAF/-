@@ -52,8 +52,9 @@ const uploadToCloudinary = async (file) => {
   formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
   formData.append('public_id', `recuerdo_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`);
 
+  const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
   const response = await withTimeout(
-    fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+    fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`, {
       method: 'POST',
       body: formData,
     }),
@@ -135,12 +136,13 @@ export const updatePresence = async (user) => {
 // 2. Subir nuevo recuerdo con foto
 export const createMemory = async ({ title, description, date, category, tags, imageFile, author }) => {
   let imageUrl = '';
+  const mediaType = imageFile.type.startsWith('video/') ? 'video' : 'image';
 
   try {
     if (isCloudinaryConfigured) {
       imageUrl = await uploadToCloudinary(imageFile);
     } else if (isFirebaseConfigured && storage && db) {
-      const storageRef = ref(storage, `memories/${Date.now()}_${imageFile.name || 'foto.jpg'}`);
+      const storageRef = ref(storage, `memories/${Date.now()}_${imageFile.name || (mediaType === 'video' ? 'video.mp4' : 'foto.jpg')}`);
       const snapshot = await withTimeout(uploadBytes(storageRef, imageFile), 45000, 'subir la foto');
       imageUrl = await withTimeout(getDownloadURL(snapshot.ref), 30000, 'obtener la foto publicada');
     }
@@ -153,6 +155,7 @@ export const createMemory = async ({ title, description, date, category, tags, i
         category: category || 'Momentos Especiales',
         tags: tags || [],
         imageUrl,
+        mediaType,
         author,
         likes: [],
         comments: [],
@@ -189,6 +192,7 @@ export const createMemory = async ({ title, description, date, category, tags, i
       category: category || 'Momentos Especiales',
       tags: tags || [],
       imageUrl: base64Url,
+      mediaType,
       author,
       likes: [],
       comments: [],
@@ -211,6 +215,7 @@ export const createMemory = async ({ title, description, date, category, tags, i
     category: category || 'Momentos Especiales',
     tags: tags || [],
     imageUrl: base64Url,
+    mediaType,
     author,
     likes: [],
     comments: [],
