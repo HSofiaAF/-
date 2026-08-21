@@ -94,6 +94,8 @@ export const AuthProvider = ({ children }) => {
         if (firebaseUser) {
           const formatted = formatFirebaseUser(firebaseUser);
           persistSession(formatted);
+        } else {
+          persistSession(null);
         }
         setLoading(false);
       });

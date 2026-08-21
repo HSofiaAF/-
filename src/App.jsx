@@ -51,7 +51,7 @@ export function App() {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [currentUser?.uid]);
 
   const handleUploadSuccess = async (newMemoryData) => {
     if (!currentUser) {

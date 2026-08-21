@@ -35,10 +35,49 @@ const saveLocalMemories = (memories) => {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(memories));
 };
 
+const isCloudinaryConfigured = Boolean(
+  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME &&
+  import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+);
+
+const uploadToCloudinary = async (file) => {
+  if (!isCloudinaryConfigured) {
+    throw new Error('Cloudinary no está configurado. Define VITE_CLOUDINARY_CLOUD_NAME y VITE_CLOUDINARY_UPLOAD_PRESET.');
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await withTimeout(
+    fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+      method: 'POST',
+      body: formData,
+    }),
+    60000,
+    'subir la foto a Cloudinary'
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Cloudinary upload failed: ${response.status} ${text}`);
+  }
+
+  const data = await response.json();
+  return data.secure_url || data.url;
+};
+
+const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onloadend = () => resolve(reader.result);
+  reader.onerror = () => reject(new Error('No se pudo leer la imagen localmente.'));
+  reader.readAsDataURL(file);
+});
+
 const withTimeout = (promise, timeoutMs, operation) => Promise.race([
   promise,
   new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(`La operación "${operation}" tardó demasiado. Comprueba Firebase Storage y tu conexión.`)), timeoutMs);
+    setTimeout(() => reject(new Error(`La operación "${operation}" tardó demasiado. Comprueba tu conexión o la configuración de almacenamiento.`)), timeoutMs);
   })
 ]);
 
@@ -68,12 +107,16 @@ export const fetchMemories = async () => {
 export const createMemory = async ({ title, description, date, category, tags, imageFile, author }) => {
   let imageUrl = '';
 
-  if (isFirebaseConfigured && storage && db) {
-    try {
+  try {
+    if (isCloudinaryConfigured) {
+      imageUrl = await uploadToCloudinary(imageFile);
+    } else if (isFirebaseConfigured && storage && db) {
       const storageRef = ref(storage, `memories/${Date.now()}_${imageFile.name || 'foto.jpg'}`);
       const snapshot = await withTimeout(uploadBytes(storageRef, imageFile), 45000, 'subir la foto');
       imageUrl = await withTimeout(getDownloadURL(snapshot.ref), 30000, 'obtener la foto publicada');
+    }
 
+    if (isFirebaseConfigured && db) {
       const newDoc = {
         title,
         description,
@@ -90,49 +133,58 @@ export const createMemory = async ({ title, description, date, category, tags, i
 
       const docRef = await withTimeout(addDoc(collection(db, 'memories'), newDoc), 30000, 'guardar el recuerdo');
       return { id: docRef.id, ...newDoc };
-    } catch (error) {
-      console.error('[Firebase upload]', {
-        code: error?.code || 'client/timeout',
-        message: error?.message || error,
-        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        storageConfigured: Boolean(storage),
-        databaseConfigured: Boolean(db)
-      });
-      const details = error?.code === 'storage/unauthorized'
-        ? 'Firebase ha rechazado la subida. Revisa que tu cuenta tenga permisos y que Storage esté inicializado.'
-        : error?.code === 'storage/unknown'
-          ? 'Firebase Storage no está disponible todavía. Abre Storage en Firebase Console y pulsa “Comenzar”.'
-          : error?.message || 'No se pudo subir la foto a Firebase.';
-      throw new Error(details);
     }
+  } catch (error) {
+    console.error('[Storage upload]', {
+      code: error?.code || 'client/timeout',
+      message: error?.message || error,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      cloudinaryConfigured: isCloudinaryConfigured,
+      storageConfigured: Boolean(storage),
+      databaseConfigured: Boolean(db)
+    });
+
+    const base64Url = await readFileAsDataUrl(imageFile);
+    const newMemory = {
+      id: 'mem-' + Date.now(),
+      title,
+      description,
+      date,
+      category: category || 'Momentos Especiales',
+      tags: tags || [],
+      imageUrl: base64Url,
+      author,
+      likes: [],
+      comments: [],
+      createdAt: new Date().toISOString()
+    };
+
+    const existing = getLocalMemories();
+    const updated = [newMemory, ...existing];
+    saveLocalMemories(updated);
+    return newMemory;
   }
 
   // Modo local (Convertir a Data URL para previsualizar localmente)
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64Url = reader.result;
-      const newMemory = {
-        id: 'mem-' + Date.now(),
-        title,
-        description,
-        date,
-        category: category || 'Momentos Especiales',
-        tags: tags || [],
-        imageUrl: base64Url,
-        author,
-        likes: [],
-        comments: [],
-        createdAt: new Date().toISOString()
-      };
+  const base64Url = await readFileAsDataUrl(imageFile);
+  const newMemory = {
+    id: 'mem-' + Date.now(),
+    title,
+    description,
+    date,
+    category: category || 'Momentos Especiales',
+    tags: tags || [],
+    imageUrl: base64Url,
+    author,
+    likes: [],
+    comments: [],
+    createdAt: new Date().toISOString()
+  };
 
-      const existing = getLocalMemories();
-      const updated = [newMemory, ...existing];
-      saveLocalMemories(updated);
-      resolve(newMemory);
-    };
-    reader.readAsDataURL(imageFile);
-  });
+  const existing = getLocalMemories();
+  const updated = [newMemory, ...existing];
+  saveLocalMemories(updated);
+  return newMemory;
 };
 
 // 3. Dar / Quitar Like (Corazón)

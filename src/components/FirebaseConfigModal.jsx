@@ -20,11 +20,11 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
     setJsonInput(text);
     try {
       const cleanJson = text
-        .replace(/const firebaseConfig =/g, '')
-        .replace(/;/g, '')
+        .replace(/^\s*const\s+firebaseConfig\s*=\s*/, '')
+        .replace(/;\s*$/, '')
         .trim();
-      
-      const parsed = Function('"use strict";return (' + cleanJson + ')')();
+
+      const parsed = JSON.parse(cleanJson);
       if (parsed.apiKey) setApiKey(parsed.apiKey);
       if (parsed.authDomain) setAuthDomain(parsed.authDomain);
       if (parsed.projectId) setProjectId(parsed.projectId);

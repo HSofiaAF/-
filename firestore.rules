@@ -10,10 +10,8 @@ service cloud.firestore {
 
     match /memories/{memoryId} {
 
-      // Cualquiera con el enlace de la app puede leer los recuerdos.
-      // Si quieres que el álbum sea privado de verdad, cambia esto a:
-      //   allow read: if request.auth != null;
-      allow read: if true;
+      // El álbum solo está disponible para usuarios autenticados.
+      allow read: if request.auth != null;
 
       // Solo un usuario autenticado puede crear un recuerdo, y el
       // email del autor debe coincidir con el del usuario autenticado
@@ -23,8 +21,8 @@ service cloud.firestore {
 
        // El propietario puede editar cualquier campo. Los demás usuarios
        // autenticados solo pueden reaccionar o dejar comentarios.
-       allow update: if isOwner()
-            || (request.auth != null
+        allow update: if isOwner()
+          || (request.auth != null
                     && request.resource.data.diff(resource.data).affectedKeys()
               .hasOnly(['likes', 'comments']));
 
