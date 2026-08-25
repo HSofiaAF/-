@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+<defs>
+  <marker id="arrow_0f766e" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+  </marker>
+  <marker id="arrow_16a34a" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+  </marker>
+  <marker id="arrow_2563eb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+  </marker>
+  <marker id="arrow_d97706" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+  </marker>
+  <marker id="arrow_dc2626" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.13"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="#fbfcfe"/>
+<text x="54" y="62" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="800" fill="#14213d">Prompt compression ladder</text>
+<text x="54" y="95" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#526171">Drop filler, keep technical substance exact.</text>
+<path d="M 410 255 L 445 255" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow_dc2626)"/>
+<path d="M 695 255 L 730 255" fill="none" stroke="#d97706" stroke-width="3" marker-end="url(#arrow_d97706)"/>
+<path d="M 980 255 L 1015 255" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow_2563eb)"/>
+<path d="M 300 455 L 300 330" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow_dc2626)" stroke-dasharray="9 8"/><rect x="220.0" y="358.5" width="160" height="30" rx="15" fill="#fbfcfe" stroke="none"/><text x="300.0" y="379.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#dc2626">remove</text>
+<path d="M 700 455 L 700 330" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrow_16a34a)"/><rect x="620.0" y="358.5" width="160" height="30" rx="15" fill="#fbfcfe" stroke="none"/><text x="700.0" y="379.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#16a34a">preserve</text>
+<path d="M 1090 455 L 1090 330" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow_0f766e)"/><rect x="1010.0" y="358.5" width="160" height="30" rx="15" fill="#fbfcfe" stroke="none"/><text x="1090.0" y="379.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#0f766e">clarify</text>
+<rect x="80" y="190" width="330" height="130" rx="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+<text x="245.0" y="238.4" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">Verbose</text>
+<text x="245.0" y="262.8" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">"Could you please help</text>
+<text x="245.0" y="287.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">me refactor..."</text>
+<rect x="445" y="190" width="250" height="130" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="2.5"/>
+<text x="570.0" y="250.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Lite</text>
+<text x="570.0" y="277.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">remove filler</text>
+<rect x="730" y="190" width="250" height="130" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="855.0" y="250.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Full</text>
+<text x="855.0" y="277.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">fragments OK</text>
+<rect x="1015" y="190" width="250" height="130" rx="16" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="1140.0" y="250.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Ultra</text>
+<text x="1140.0" y="277.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">arrows + abbrev</text>
+<rect x="180" y="455" width="260" height="95" rx="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+<text x="310.0" y="485.9" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">Articles</text>
+<text x="310.0" y="510.3" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">pleasantries</text>
+<text x="310.0" y="534.7" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">hedging</text>
+<rect x="570" y="455" width="260" height="95" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="700.0" y="485.9" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">Technical terms</text>
+<text x="700.0" y="510.3" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">file names</text>
+<text x="700.0" y="534.7" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">code unchanged</text>
+<rect x="960" y="455" width="260" height="95" rx="16" fill="#ccfbf1" stroke="#0f766e" stroke-width="2.5"/>
+<text x="1090.0" y="485.9" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">Scope</text>
+<text x="1090.0" y="510.3" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">acceptance criteria</text>
+<text x="1090.0" y="534.7" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#14213d">exact constraints</text>
+<text x="660.0" y="649.1" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" fill="#14213d">Visual rule: compression is a funnel, not a shredder.</text>
+<text x="660.0" y="682.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="800" fill="#14213d">Meaning must survive.</text>
+</svg>

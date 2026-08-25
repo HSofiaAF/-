@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="760" viewBox="0 0 1450 760">
+<defs>
+  <marker id="arrow_0f766e" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+  </marker>
+  <marker id="arrow_16a34a" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+  </marker>
+  <marker id="arrow_2563eb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+  </marker>
+  <marker id="arrow_d97706" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+  </marker>
+  <marker id="arrow_dc2626" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.13"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="#fbfcfe"/>
+<text x="54" y="62" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="800" fill="#14213d">Format tax pipeline</text>
+<text x="54" y="95" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#526171">Convert rich files to Markdown before they enter AI context.</text>
+<path d="M 340 280 L 425 280" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow_dc2626)"/>
+<path d="M 705 280 L 800 280" fill="none" stroke="#d97706" stroke-width="3" marker-end="url(#arrow_d97706)"/>
+<path d="M 1050 280 L 1140 280" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow_2563eb)"/>
+<path d="M 1255 340 Q 1260 470 1010 500" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrow_16a34a)"/>
+<path d="M 565 545 L 890 545" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow_0f766e)" stroke-dasharray="9 8"/><rect x="647.5" y="511.0" width="160" height="30" rx="15" fill="#fbfcfe" stroke="none"/><text x="727.5" y="532.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#0f766e">working format</text>
+<rect x="80" y="220" width="260" height="120" rx="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+<text x="210.0" y="275.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">DOCX / PDF / HTML</text>
+<text x="210.0" y="302.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">slides / media</text>
+<rect x="425" y="190" width="280" height="180" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="2.5"/>
+<text x="565.0" y="248.3" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Format noise</text>
+<text x="565.0" y="275.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">fonts, XML,</text>
+<text x="565.0" y="302.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">layout,</text>
+<text x="565.0" y="328.8" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">positioning, tags</text>
+<rect x="800" y="205" width="250" height="150" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="925.0" y="261.7" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">MarkItDown</text>
+<text x="925.0" y="288.6" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">normalize</text>
+<text x="925.0" y="315.4" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">structure</text>
+<rect x="1140" y="220" width="230" height="120" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="1255.0" y="248.3" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Clean Markdown</text>
+<text x="1255.0" y="275.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">headings,</text>
+<text x="1255.0" y="302.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">lists,</text>
+<text x="1255.0" y="328.8" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">tables, links</text>
+<rect x="225" y="500" width="340" height="90" rx="16" fill="#ccfbf1" stroke="#0f766e" stroke-width="2.5"/>
+<text x="395.0" y="527.6" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#14213d">Pay for semantic</text>
+<text x="395.0" y="553.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#14213d">content,</text>
+<text x="395.0" y="578.8" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#14213d">not page decoration.</text>
+<rect x="890" y="500" width="320" height="90" rx="16" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="1050.0" y="527.6" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#14213d">Generate rich delivery</text>
+<text x="1050.0" y="553.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#14213d">format</text>
+<text x="1050.0" y="578.8" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" fill="#14213d">only at the end.</text>
+</svg>

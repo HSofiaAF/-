@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="820" viewBox="0 0 1450 820">
+<defs>
+  <marker id="arrow_16a34a" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+  </marker>
+  <marker id="arrow_2563eb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+  </marker>
+  <marker id="arrow_d97706" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+  </marker>
+  <marker id="arrow_dc2626" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.13"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="#fbfcfe"/>
+<text x="54" y="62" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="800" fill="#14213d">Cache stability</text>
+<text x="54" y="95" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#526171">Keep the control surface fixed; switch lanes in a fresh session.</text>
+<path d="M 350 310 L 350 350" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrow_16a34a)"/>
+<path d="M 350 440 L 350 480" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrow_16a34a)"/>
+<path d="M 1065 310 L 1065 350" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow_2563eb)"/>
+<path d="M 1065 440 L 1065 480" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow_dc2626)"/>
+<path d="M 1065 570 L 1065 590 L 725 590 L 725 625" fill="none" stroke="#d97706" stroke-width="3" marker-end="url(#arrow_d97706)"/>
+<text x="400.0" y="185.7" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="800" fill="#16a34a">Stable thread</text>
+<rect x="90" y="220" width="520" height="90" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="350.0" y="260.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Turn 1</text>
+<text x="350.0" y="287.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">same model + MCP + agent</text>
+<rect x="90" y="350" width="520" height="90" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="350.0" y="390.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Turn 2</text>
+<text x="350.0" y="417.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">cached prefix reused</text>
+<rect x="90" y="480" width="520" height="90" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="350.0" y="520.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Turn 3</text>
+<text x="350.0" y="547.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">only newest request changes</text>
+<text x="1120.0" y="185.7" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="800" fill="#dc2626">Cache-busted thread</text>
+<rect x="805" y="220" width="520" height="90" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="1065.0" y="260.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Turn 1</text>
+<text x="1065.0" y="287.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">model A + MCP set A</text>
+<rect x="805" y="350" width="520" height="90" rx="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+<text x="1065.0" y="390.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Mid-thread switch</text>
+<text x="1065.0" y="417.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">model/MCP/agent changes</text>
+<rect x="805" y="480" width="520" height="90" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="2.5"/>
+<text x="1065.0" y="520.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">Turn 3</text>
+<text x="1065.0" y="547.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="600" fill="#14213d">prefix reprocessed + stale history</text>
+<rect x="500" y="625" width="450" height="105" rx="16" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="725.0" y="657.6" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">Better:</text>
+<text x="725.0" y="686.9" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">handoff summary,</text>
+<text x="725.0" y="716.1" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">then fresh session</text>
+</svg>

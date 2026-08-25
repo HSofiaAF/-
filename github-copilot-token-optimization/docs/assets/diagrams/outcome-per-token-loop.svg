@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="820" viewBox="0 0 1450 820">
+<defs>
+  <marker id="arrow_0f766e" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+  </marker>
+  <marker id="arrow_16a34a" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+  </marker>
+  <marker id="arrow_2563eb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+  </marker>
+  <marker id="arrow_7c3aed" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/>
+  </marker>
+  <marker id="arrow_d97706" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.13"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="#fbfcfe"/>
+<text x="54" y="62" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="800" fill="#14213d">Outcome-per-token loop</text>
+<text x="54" y="95" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#526171">The goal is fewer wrong turns, not merely fewer words.</text>
+<path d="M 865 190 L 890 190 L 890 305 L 915 305" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow_2563eb)"/>
+<path d="M 1055 355 L 1055 500" fill="none" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow_7c3aed)"/>
+<path d="M 915 548 L 890 548 L 890 665 L 865 665" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow_0f766e)"/>
+<path d="M 585 665 L 560 665 L 560 548 L 530 548" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrow_16a34a)"/>
+<path d="M 390 500 L 390 355" fill="none" stroke="#d97706" stroke-width="3" marker-end="url(#arrow_d97706)"/>
+<path d="M 530 305 L 560 305 L 560 190 L 585 190" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow_2563eb)"/>
+<ellipse cx="725.0" cy="190.0" rx="140.0" ry="45.0" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="725.0" y="199.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">Pick task shape</text>
+<rect x="915" y="260" width="280" height="95" rx="16" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+<text x="1055.0" y="316.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">Plan before code</text>
+<rect x="915" y="500" width="280" height="95" rx="16" fill="#ccfbf1" stroke="#0f766e" stroke-width="2.5"/>
+<text x="1055.0" y="542.4" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">Route model by</text>
+<text x="1055.0" y="570.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">phase</text>
+<rect x="585" y="620" width="280" height="95" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="725.0" y="676.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">Target context</text>
+<rect x="250" y="500" width="280" height="95" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="2.5"/>
+<text x="390.0" y="556.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">Verify evidence</text>
+<rect x="250" y="260" width="280" height="95" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="390.0" y="316.5" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">Close cleanly</text>
+<rect x="545" y="355" width="360" height="120" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="725.0" y="408.4" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="800" fill="#14213d">High outcome</text>
+<text x="725.0" y="445.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="800" fill="#14213d">per token</text>
+</svg>

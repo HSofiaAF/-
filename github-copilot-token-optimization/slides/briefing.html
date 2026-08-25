@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Copilot Token Optimization - Practitioner Briefing</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/black.css">
+    <style>
+      :root {
+        --r-main-font: Inter, ui-sans-serif, system-ui, sans-serif;
+        --r-heading-font: Inter, ui-sans-serif, system-ui, sans-serif;
+        --r-link-color: #58a6ff;
+      }
+      .reveal { font-size: 34px; }
+      .reveal h1, .reveal h2, .reveal h3 { text-transform: none; letter-spacing: -0.03em; }
+      .reveal h1 { font-size: 2.2em; }
+      .reveal h2 { font-size: 1.5em; }
+      .reveal p, .reveal li { line-height: 1.25; }
+      .reveal ul, .reveal ol { width: 86%; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7em; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55em; }
+      .card { background: rgba(22, 27, 34, 0.92); border: 1px solid #30363d; border-radius: 14px; padding: 0.7em; text-align: left; }
+      .card h3 { margin: 0 0 0.3em; font-size: 0.9em; }
+      .card p, .card li { font-size: 0.68em; }
+      .kicker { color: #7ee787; font-size: 0.62em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .accent { color: #7ee787; }
+      .muted { color: #8b949e; }
+      .small { font-size: 0.68em; }
+      .quote { border-left: 8px solid #7ee787; color: #c9d1d9; padding-left: 0.8em; text-align: left; }
+      .diagram { display: block; max-width: 92%; max-height: 480px; margin: 0.35em auto; background: #f8fafc; border-radius: 14px; }
+      code { background: rgba(110, 118, 129, 0.22); border-radius: 0.18em; padding: 0.06em 0.18em; }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <p class="kicker">Practitioner briefing</p>
+          <h1>GitHub Copilot Token Optimization</h1>
+          <p>18 actions for cheaper, faster, more reliable AI-assisted engineering.</p>
+          <p class="small muted">Need the full training? <a href="index.html">Open the 8-hour workshop</a>.</p>
+        </section>
+
+        <section>
+          <h2>Outcome: useful work per token</h2>
+          <div class="grid-3">
+            <div class="card"><h3>Spend less</h3><p>Reduce unnecessary input, output, and tool overhead.</p></div>
+            <div class="card"><h3>Move faster</h3><p>Keep context focused. Avoid expensive rework loops.</p></div>
+            <div class="card"><h3>Ship better</h3><p>Plan, verify, and use the right agent mode for the task.</p></div>
+          </div>
+          <p class="small muted">Community guidance, not official GitHub or Microsoft policy.</p>
+        </section>
+
+        <section>
+          <h2>Know what you pay for</h2>
+          <div class="grid">
+            <div class="card"><h3>Input</h3><p>System prompt, instructions, files, history, tool schemas, and your prompt.</p></div>
+            <div class="card"><h3>Output</h3><p>Responses, reasoning, and tool calls. Usually the highest-cost token type.</p></div>
+            <div class="card"><h3>Cached input</h3><p>Stable request prefixes can be reused at a lower effective cost.</p></div>
+            <div class="card"><h3>Agent loops</h3><p>Every read, command, retry, and rework step compounds cost.</p></div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Priority stack</h2>
+          <ol>
+            <li><strong class="accent">Constrain output.</strong> Stop paying for prose you do not need.</li>
+            <li><strong class="accent">Shrink context.</strong> Keep always-on instructions and files focused.</li>
+            <li><strong class="accent">Reduce tool overhead.</strong> Load only needed MCP tools and compress command output.</li>
+            <li><strong class="accent">Avoid rework.</strong> Choose the right mode, model, plan, and verification.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>1. Default to constrained output</h2>
+          <div class="quote">Code only. No explanation unless asked.</div>
+          <p>Use short, explicit formats for code tasks, reviews, and summaries. Output control compounds across every interaction.</p>
+          <p class="small muted">Do not compress reasoning or evidence when the task needs it.</p>
+        </section>
+
+        <section>
+          <h2>2. Compress always-on instructions</h2>
+          <div class="grid">
+            <div class="card"><h3>Keep</h3><p>Project landmines, commands, naming, architecture rules, output constraints.</p></div>
+            <div class="card"><h3>Remove</h3><p>Boilerplate, discovery facts, duplicate rules, occasional workflow checklists.</p></div>
+          </div>
+          <p>Every token in <code>.github/copilot-instructions.md</code> is paid repeatedly. Put rare guidance in scoped or on-demand files.</p>
+        </section>
+
+        <section>
+          <h2>3. Target context deliberately</h2>
+          <ul>
+            <li>Close unrelated editor tabs and avoid attaching broad files.</li>
+            <li>Use <code>applyTo</code> instruction files for path-specific rules.</li>
+            <li>Convert rich input to Markdown before AI work.</li>
+            <li>Send the relevant plan and files, not an entire project history.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>4. Protect cached prefixes</h2>
+          <p>For one long task, keep this stable:</p>
+          <div class="quote">{ model, reasoning effort, loaded skills, MCP/tool set, agent/profile }</div>
+          <p>Changing the lane or harness can lose cached-prefix savings. Start a fresh chat with a compact handoff instead.</p>
+        </section>
+
+        <section>
+          <h2>5. Use the smallest capable mode</h2>
+          <div class="grid-3">
+            <div class="card"><h3>Ask</h3><p>Questions, explanations, decisions. No tools needed.</p></div>
+            <div class="card"><h3>Edit</h3><p>Bounded changes with known files and intent.</p></div>
+            <div class="card"><h3>Agent</h3><p>Multi-file work that needs exploration, commands, and verification.</p></div>
+          </div>
+          <p class="small">Do not use Agent mode for a question that Ask mode can answer.</p>
+        </section>
+
+        <section>
+          <h2>6. Route models by task</h2>
+          <ul>
+            <li><strong>Auto first</strong> for everyday work.</li>
+            <li><strong>Lightweight</strong> for lookup, syntax, small mechanical edits.</li>
+            <li><strong>Strong reasoning</strong> for planning, architecture, and hard debugging.</li>
+            <li><strong>Execution lane</strong> after the hard decisions are written down.</li>
+          </ul>
+          <p>Choose reasoning effort before the long session. Do not raise it mid-thread.</p>
+        </section>
+
+        <section>
+          <h2>7. Plan, then execute fresh</h2>
+          <img class="diagram" src="../docs/assets/diagrams/plan-execute-cheaply.svg" alt="Plan first, then execute cheaply">
+          <p class="small">Capture acceptance criteria, likely files, risks, and verification. Start execution with only that handoff.</p>
+        </section>
+
+        <section>
+          <h2>8. Keep the MCP baseline small</h2>
+          <ul>
+            <li>Every enabled MCP tool schema is repeated in agent context.</li>
+            <li>Disable servers and extensions not needed for this repo or task.</li>
+            <li>Use a clean profile or focused agent for repeat workflows.</li>
+            <li>Run <code>/context</code> in Copilot CLI to see what is loaded.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>9. Compress shell output once</h2>
+          <div class="grid">
+            <div class="card"><h3>RTK</h3><p>Compiled defaults for common developer command output.</p></div>
+            <div class="card"><h3>snip</h3><p>YAML pipelines and local savings tracking.</p></div>
+          </div>
+          <p>Choose one filter layer per command path. Do not stack both by default.</p>
+        </section>
+
+        <section>
+          <h2>10. Reuse codebase orientation</h2>
+          <p><a href="https://github.com/Graphify-Labs/graphify">Graphify</a> maps a large repo once, then agents query structure instead of repeatedly reading broad file sets.</p>
+          <pre><code>graphify query "where is auth middleware?"
+graphify path "Router" "Database"</code></pre>
+          <p class="small">Best for large repos and repeated agent sessions. Skip it for small, one-off changes.</p>
+        </section>
+
+        <section>
+          <h2>11. Make token use visible</h2>
+          <div class="grid">
+            <div class="card"><h3>In-session</h3><p>Use <code>/context</code> to inspect Copilot CLI context pressure and loaded tools.</p></div>
+            <div class="card"><h3>Cross-session</h3><p><a href="https://github.com/tokentopapp/tokentop">Tokentop</a> shows local live tokens, cost, burn rate, and budget alerts.</p></div>
+          </div>
+          <p>Visibility finds waste. It does not compress context by itself.</p>
+        </section>
+
+        <section>
+          <h2>12. Set a stable session harness</h2>
+          <div class="quote">Model + effort + mode + agent + skills + MCP tools + output filter + repo instructions</div>
+          <p>Choose it before long work. If the task needs a different harness, create a fresh session rather than mutating a long transcript.</p>
+        </section>
+
+        <section>
+          <h2>13. Verify before completion</h2>
+          <ol>
+            <li>Name the acceptance criteria.</li>
+            <li>Run the targeted test, build, or check.</li>
+            <li>Report evidence, not a generic “done.”</li>
+          </ol>
+          <p>Small verification cost prevents a new debugging or review session later.</p>
+        </section>
+
+        <section>
+          <h2>14. Adopt and sustain</h2>
+          <div class="grid">
+            <div class="card"><h3>Week 1</h3><p>Constrain output. Trim repo instructions.</p></div>
+            <div class="card"><h3>Week 2</h3><p>Route Ask, Edit, and Agent deliberately.</p></div>
+            <div class="card"><h3>Week 3</h3><p>Audit MCP tools and command output.</p></div>
+            <div class="card"><h3>Week 4</h3><p>Plan-first workflows, cache stability, and usage review.</p></div>
+          </div>
+          <p class="small">Every task: constrain output, target context, choose the harness, plan, and verify.</p>
+          <p class="small"><a href="../README.md">Read the guide</a> · <a href="index.html">Open the full workshop</a></p>
+        </section>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        slideNumber: "c/t",
+        transition: "slide",
+        width: 1280,
+        height: 720,
+        margin: 0.06
+      });
+    </script>
+  </body>
+</html>

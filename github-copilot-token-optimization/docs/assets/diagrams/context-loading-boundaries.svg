@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="820" viewBox="0 0 1450 820">
+<defs>
+  <marker id="arrow_2563eb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+  </marker>
+  <marker id="arrow_dc2626" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.13"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="#fbfcfe"/>
+<text x="54" y="62" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="800" fill="#14213d">Context loading boundaries</text>
+<text x="54" y="95" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="500" fill="#526171">Always-on is a tax; scoped and on-demand context loads only when useful.</text>
+<path d="M 440 415 L 500 415" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow_dc2626)"/><rect x="390.0" y="381.0" width="160" height="30" rx="15" fill="#fbfcfe" stroke="none"/><text x="470.0" y="402.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#dc2626">prune</text>
+<path d="M 910 415 L 970 415" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow_2563eb)"/><rect x="860.0" y="381.0" width="160" height="30" rx="15" fill="#fbfcfe" stroke="none"/><text x="940.0" y="402.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#2563eb">defer</text>
+<rect x="80" y="175" width="360" height="480" rx="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+<text x="260.0" y="351.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">ALWAYS-ON</text>
+<text x="260.0" y="380.4" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">loaded every turn</text>
+<text x="260.0" y="409.7" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d"></text>
+<text x="260.0" y="439.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">• repo instructions</text>
+<text x="260.0" y="468.3" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">• AGENTS.md/CLAUDE.md</text>
+<text x="260.0" y="497.6" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#14213d">• active MCP schemas</text>
+<rect x="500" y="220" width="410" height="380" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="705.0" y="354.1" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="800" fill="#14213d">SCOPED</text>
+<text x="705.0" y="379.8" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="800" fill="#14213d">loads by path</text>
+<text x="705.0" y="405.4" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="800" fill="#14213d"></text>
+<text x="705.0" y="431.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="800" fill="#14213d">.github/instructions/*.md</text>
+<text x="705.0" y="456.6" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="800" fill="#14213d"></text>
+<text x="705.0" y="482.2" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="800" fill="#14213d">applyTo: src/api/**</text>
+<rect x="970" y="285" width="320" height="250" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+<text x="1130.0" y="362.9" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">ON-DEMAND</text>
+<text x="1130.0" y="390.9" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">loads when invoked</text>
+<text x="1130.0" y="419.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d"></text>
+<text x="1130.0" y="447.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">skills, checklists,</text>
+<text x="1130.0" y="475.1" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="800" fill="#14213d">prompt snippets</text>
+<text x="700.0" y="709.6" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="29" font-weight="800" fill="#14213d">Target shape: tiny core + narrow scoped slices +</text>
+<text x="700.0" y="745.0" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="29" font-weight="800" fill="#14213d">occasional skills.</text>
+</svg>

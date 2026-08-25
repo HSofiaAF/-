@@ -1,0 +1,95 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner() {
+      return request.auth != null
+        && request.auth.token.email == 'theangelvaldez17@gmail.com';
+    }
+
+    function isAuthorizedUploader() {
+      return isOwner()
+        || (request.auth != null
+          && exists(/databases/$(database)/documents/authorizedUsers/$(request.auth.uid)));
+    }
+
+    function isAuthorizedReader() {
+      return isOwner()
+        || (request.auth != null
+          && exists(/databases/$(database)/documents/authorizedUsers/$(request.auth.uid)));
+    }
+
+    function isValidLikesUpdate() {
+      return request.resource.data.likes is list
+        && request.resource.data.likes.size() <= 100
+        && resource.data.likes is list
+        && request.resource.data.likes.hasAll(resource.data.likes)
+        && request.resource.data.likes.size() == resource.data.likes.size() + 1
+        && request.resource.data.likes.hasAll([request.auth.token.email]);
+    }
+
+    function isValidUnlikeUpdate() {
+      return request.resource.data.likes is list
+        && resource.data.likes is list
+        && resource.data.likes.size() <= 100
+        && request.resource.data.likes.size() + 1 == resource.data.likes.size()
+        && resource.data.likes.hasAll([request.auth.token.email])
+        && resource.data.likes.hasAll(request.resource.data.likes);
+    }
+
+    function isValidCommentUpdate() {
+      return request.resource.data.comments is list
+        && request.resource.data.comments.size() <= 100
+        && resource.data.comments is list
+        && request.resource.data.comments.hasAll(resource.data.comments)
+        && request.resource.data.comments.size() == resource.data.comments.size() + 1
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].authorEmail == request.auth.token.email
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].text is string
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].text.size() > 0
+        && request.resource.data.comments[request.resource.data.comments.size() - 1].text.size() <= 1000;
+    }
+
+    match /memories/{memoryId} {
+
+      // El álbum solo se puede visualizar por usuarios autorizados.
+      allow read: if isAuthorizedReader();
+
+      // Solo un usuario autenticado puede crear un recuerdo, y el
+      // email del autor debe coincidir con el del usuario autenticado
+      // (evita que alguien publique haciéndose pasar por otra persona).
+      allow create: if isAuthorizedUploader()
+                    && request.resource.data.author.email == request.auth.token.email;
+
+       // El propietario puede editar cualquier campo. Los demás usuarios
+       // autenticados solo pueden reaccionar o dejar comentarios.
+       allow update: if isOwner()
+          || (request.auth != null
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+            && (isValidLikesUpdate() || isValidUnlikeUpdate()))
+          || (request.auth != null
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['comments'])
+            && isValidCommentUpdate());
+
+       // El propietario puede borrar cualquier recuerdo; los demás no pueden
+       // modificar ni borrar fotos publicadas.
+       allow delete: if isAuthorizedUploader();
+    }
+
+     match /authorizedUsers/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if isOwner();
+     }
+
+    match /presence/{userId} {
+      allow read: if isAuthorizedReader();
+      allow create, update: if isAuthorizedReader() && request.auth.uid == userId;
+      allow delete: if isAuthorizedReader() && request.auth.uid == userId;
+    }
+
+    // Bloquea todo lo demás por defecto.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
