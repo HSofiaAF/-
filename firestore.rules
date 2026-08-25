@@ -14,6 +14,12 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/authorizedUsers/$(request.auth.uid)));
     }
 
+    function isAuthorizedReader() {
+      return isOwner()
+        || (request.auth != null
+          && exists(/databases/$(database)/documents/authorizedUsers/$(request.auth.uid)));
+    }
+
     function isValidLikesUpdate() {
       return request.resource.data.likes is list
         && request.resource.data.likes.size() <= 100
@@ -46,8 +52,8 @@ service cloud.firestore {
 
     match /memories/{memoryId} {
 
-      // El álbum se puede visualizar sin iniciar sesión.
-      allow read: if true;
+      // El álbum solo se puede visualizar por usuarios autorizados.
+      allow read: if isAuthorizedReader();
 
       // Solo un usuario autenticado puede crear un recuerdo, y el
       // email del autor debe coincidir con el del usuario autenticado
@@ -76,9 +82,9 @@ service cloud.firestore {
      }
 
     match /presence/{userId} {
-      allow read: if request.auth != null;
-      allow create, update: if request.auth != null && request.auth.uid == userId;
-      allow delete: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAuthorizedReader();
+      allow create, update: if isAuthorizedReader() && request.auth.uid == userId;
+      allow delete: if isAuthorizedReader() && request.auth.uid == userId;
     }
 
     // Bloquea todo lo demás por defecto.

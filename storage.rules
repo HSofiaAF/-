@@ -8,17 +8,23 @@ service firebase.storage {
         && request.auth.token.email == 'theangelvaldez17@gmail.com';
     }
 
+    function isAuthorizedUser() {
+      return isOwner()
+        || (request.auth != null
+          && firestore.exists(/databases/(default)/documents/authorizedUsers/$(request.auth.uid)));
+    }
+
     match /memories/{fileName} {
 
-      // Las fotos solo están disponibles para usuarios autenticados.
-      allow read: if request.auth != null;
+      // Las fotos solo están disponibles para usuarios autorizados.
+      allow read: if isAuthorizedUser();
 
       // Solo usuarios autenticados pueden subir, y solo imágenes
       // de hasta 10 MB (la app ya comprime a ~0.8 MB antes de subir,
       // este límite es una red de seguridad contra abuso).
-      allow create, update: if request.auth != null
+      allow create, update: if isAuthorizedUser()
                    && request.resource.size < 10 * 1024 * 1024
-                   && request.resource.contentType.matches('image/.*');
+                   && request.resource.contentType.matches('(image|video)/.*');
 
       // Solo el propietario puede borrar fotos publicadas.
       allow delete: if isOwner();
