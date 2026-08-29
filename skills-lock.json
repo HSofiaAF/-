@@ -72,6 +72,12 @@
       "sourceType": "github",
       "skillPath": "skills/xcode-project-setup/SKILL.md",
       "computedHash": "673e1c3a078c3a77c4ae706ddc731c9efc5d151b82097ef52f10c575e4cdc1c1"
+    },
+    "antigravity-token-optimization": {
+      "source": "KartikZCoding/antigravity-token-optimization-guide",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/antigravity-token-optimization/SKILL.md",
+      "computedHash": "custom-installed"
     }
   }
 }
