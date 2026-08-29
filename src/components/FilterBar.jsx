@@ -1,6 +1,6 @@
 import React from 'react';
 import { CATEGORIES } from '../data/initialMemories';
-import { Heart, Sparkles, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import { Heart, ArrowUpDown, ListFilter } from 'lucide-react';
 
 export const FilterBar = ({ 
   selectedCategory, 
@@ -14,6 +14,12 @@ export const FilterBar = ({
 }) => {
   return (
     <div className="py-4 mb-2 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
+      <div className="flex items-center gap-2 text-[11px] font-bold text-slate-600">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 border border-slate-200/80 px-2.5 py-1.5 shadow-2xs">
+          <ListFilter className="w-3.5 h-3.5 text-rose-500" />
+          {totalFiltered} / {totalAll} recuerdos
+        </span>
+      </div>
       
       {/* Category Pills */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">

@@ -8,7 +8,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { auth, db, googleProvider, isFirebaseConfigured } from '../firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -221,6 +221,58 @@ export const AuthProvider = ({ children }) => {
     setCanUpload(false);
   };
 
+  // ── Update User Profile (Nickname, Role, Avatar) ─────────────────────────
+  const updateUserProfile = async ({ name, role, avatar }) => {
+    if (!currentUser) throw new Error('No hay usuario autenticado');
+
+    const updatedName = (name !== undefined ? name : currentUser.name).trim();
+    const updatedRole = (role !== undefined ? role : currentUser.role || 'Familia').trim();
+    const updatedAvatar = avatar !== undefined ? avatar : currentUser.avatar;
+
+    const updatedUser = {
+      ...currentUser,
+      name: updatedName,
+      role: updatedRole,
+      avatar: updatedAvatar
+    };
+
+    // Firebase mode
+    if (isFirebaseConfigured && auth && auth.currentUser) {
+      try {
+        await updateProfile(auth.currentUser, {
+          displayName: updatedName,
+          photoURL: updatedAvatar
+        });
+        if (db) {
+          await setDoc(doc(db, 'userProfiles', auth.currentUser.uid), {
+            name: updatedName,
+            role: updatedRole,
+            avatar: updatedAvatar,
+            email: currentUser.email,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+        }
+      } catch (err) {
+        console.warn('Error syncing profile to Firebase:', err);
+      }
+    }
+
+    // Local mode / local cache update
+    const users = getLocalUsers();
+    if (currentUser.email && users[currentUser.email.toLowerCase()]) {
+      users[currentUser.email.toLowerCase()] = {
+        ...users[currentUser.email.toLowerCase()],
+        name: updatedName,
+        role: updatedRole,
+        avatar: updatedAvatar
+      };
+      saveLocalUsers(users);
+    }
+
+    persistSession(updatedUser);
+    return updatedUser;
+  };
+
   return (
     <AuthContext.Provider value={{
       currentUser,
@@ -229,6 +281,7 @@ export const AuthProvider = ({ children }) => {
       registerWithEmail,
       loginWithGoogle,
       logout,
+      updateUserProfile,
       isOwner,
       canUpload,
       isFirebaseActive: isFirebaseConfigured

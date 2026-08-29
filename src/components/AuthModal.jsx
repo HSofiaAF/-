@@ -283,7 +283,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
                     outline: 'none'
                   }}
                 >
-                  {['Papá', 'Mamá', 'Abuelita', 'Abuelito', 'Tía / Tío', 'Primo / Prima', 'Familia'].map(r => (
+                  {['Papá', 'Mamá', 'Abuelita', 'Abuelito', 'Tía', 'Tío', 'Hermana', 'Hermano', 'Prima', 'Primo', 'Amigo de papá', 'Amiga de mamá', 'Familia'].map(r => (
                     <option key={r} value={r}>{r}</option>
                   ))}
                 </select>

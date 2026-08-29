@@ -31,7 +31,7 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
       if (parsed.storageBucket) setStorageBucket(parsed.storageBucket);
       if (parsed.messagingSenderId) setMessagingSenderId(parsed.messagingSenderId);
       if (parsed.appId) setAppId(parsed.appId);
-    } catch (err) {
+    } catch {
       // noop
     }
   };

@@ -8,6 +8,7 @@ import { UploadModal } from './components/UploadModal';
 import { AuthModal } from './components/AuthModal';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { SlideshowModal } from './components/SlideshowModal';
+import { ProfileModal } from './components/ProfileModal';
 import { 
   fetchMemories, 
   createMemory, 
@@ -16,7 +17,7 @@ import {
   deleteMemory 
 } from './firebase/services';
 import { useAuth } from './context/AuthContext';
-import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Star, Calendar } from 'lucide-react';
+import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Calendar } from 'lucide-react';
 import { AudioPlayer } from './components/AudioPlayer';
 import { subscribeToPresence, updatePresence } from './firebase/services';
 
@@ -36,6 +37,7 @@ export function App() {
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
 
@@ -172,6 +174,28 @@ export function App() {
     return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
   });
 
+  const currentMemoryIndex = selectedMemory 
+    ? filteredMemories.findIndex(m => m.id === selectedMemory.id)
+    : -1;
+
+  const handleNextMemory = () => {
+    if (filteredMemories.length <= 1) return;
+    if (currentMemoryIndex >= 0 && currentMemoryIndex < filteredMemories.length - 1) {
+      setSelectedMemory(filteredMemories[currentMemoryIndex + 1]);
+    } else {
+      setSelectedMemory(filteredMemories[0]); // Loop to start
+    }
+  };
+
+  const handlePrevMemory = () => {
+    if (filteredMemories.length <= 1) return;
+    if (currentMemoryIndex > 0) {
+      setSelectedMemory(filteredMemories[currentMemoryIndex - 1]);
+    } else {
+      setSelectedMemory(filteredMemories[filteredMemories.length - 1]); // Loop to end
+    }
+  };
+
   const totalLikesCount = memories.reduce((acc, m) => acc + (m.likes?.length || 0), 0);
 
   return (
@@ -205,6 +229,7 @@ export function App() {
         setViewMode={setViewMode}
         onOpenUpload={() => setIsUploadOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenSlideshow={() => setIsSlideshowOpen(true)}
         searchQuery={searchQuery}
@@ -378,7 +403,15 @@ export function App() {
         onClose={() => setSelectedMemory(null)}
         onLike={handleLike}
         onAddComment={handleAddComment}
-        currentUser={currentUser}
+        onNext={handleNextMemory}
+        onPrev={handlePrevMemory}
+        currentIndex={currentMemoryIndex}
+        totalCount={filteredMemories.length}
+      />
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
       />
 
       <UploadModal

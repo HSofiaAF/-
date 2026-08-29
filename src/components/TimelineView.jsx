@@ -2,7 +2,7 @@ import React from 'react';
 import { Calendar, Heart, MessageCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export const TimelineView = ({ memories, onSelect, onLike }) => {
+export const TimelineView = ({ memories, onSelect }) => {
   const { currentUser } = useAuth();
 
   const grouped = memories.reduce((acc, memory) => {

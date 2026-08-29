@@ -28,7 +28,7 @@ const getLocalMemories = () => {
   }
   try {
     return JSON.parse(data);
-  } catch (e) {
+  } catch {
     return INITIAL_MEMORIES;
   }
 };

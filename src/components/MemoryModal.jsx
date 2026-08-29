@@ -1,18 +1,61 @@
-import React, { useState } from 'react';
-import { X, Heart, MessageCircle, Send, Calendar, Share2, Sparkles, Check } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Heart, MessageCircle, Send, Calendar, Share2, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
 import { getLikePeople } from '../utils/people';
 
-export const MemoryModal = ({ memory, onClose, onLike, onAddComment }) => {
+export const MemoryModal = ({ 
+  memory, 
+  onClose, 
+  onLike, 
+  onAddComment,
+  onNext,
+  onPrev,
+  currentIndex,
+  totalCount
+}) => {
   const { currentUser } = useAuth();
   const [commentText, setCommentText] = useState('');
   const [copied, setCopied] = useState(false);
+  const touchStartX = useRef(null);
+
+  // Keyboard navigation (ArrowLeft, ArrowRight, Escape)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight' && onNext) {
+        onNext();
+      } else if (e.key === 'ArrowLeft' && onPrev) {
+        onPrev();
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onNext, onPrev, onClose]);
 
   if (!memory) return null;
 
   const hasLiked = currentUser && memory.likes?.includes(currentUser.email);
   const likePeople = getLikePeople(memory, currentUser);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    const threshold = 50; // min swipe distance in px
+
+    if (diff > threshold && onNext) {
+      onNext();
+    } else if (diff < -threshold && onPrev) {
+      onPrev();
+    }
+    touchStartX.current = null;
+  };
 
   const handleLike = () => {
     if (!currentUser) return;
@@ -69,27 +112,85 @@ export const MemoryModal = ({ memory, onClose, onLike, onAddComment }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       
       {/* Click outside to close */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-5xl max-h-[92vh] bg-white rounded-[28px] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row border border-white/20">
-        
-        {/* Close Button */}
+      {/* Floating Prev Button (Left) */}
+      {onPrev && (
         <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition cursor-pointer shadow-md"
-          title="Cerrar"
+          onClick={(e) => { e.stopPropagation(); onPrev(); }}
+          className="fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 z-60 p-3 rounded-full bg-black/60 hover:bg-rose-600 text-white backdrop-blur-md shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border border-white/20"
+          title="Recuerdo anterior (←)"
         >
-          <X className="w-4 h-4" />
+          <ChevronLeft className="w-6 h-6" />
         </button>
+      )}
+
+      {/* Floating Next Button (Right) */}
+      {onNext && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNext(); }}
+          className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-60 p-3 rounded-full bg-black/60 hover:bg-rose-600 text-white backdrop-blur-md shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border border-white/20"
+          title="Recuerdo siguiente (→)"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      )}
+
+      <div className="relative w-full max-w-5xl max-h-[92vh] bg-white rounded-[28px] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row border border-white/20 animate-in zoom-in-95 duration-200">
+        
+        {/* Close Button & Position Badge */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+          {totalCount > 1 && currentIndex !== undefined && (
+            <span className="px-3 py-1 rounded-full bg-black/60 text-white text-xs font-bold backdrop-blur-md border border-white/20 shadow-md">
+              {currentIndex + 1} / {totalCount}
+            </span>
+          )}
+          <button
+            onClick={onClose}
+            className="p-2.5 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition cursor-pointer shadow-md"
+            title="Cerrar (Esc)"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
         {/* Left / Top: High-Res Image with Ambient Backdrop */}
-        <div className="md:w-3/5 bg-slate-950 flex items-center justify-center relative overflow-hidden group">
+        <div className="md:w-3/5 bg-slate-950 flex items-center justify-center relative overflow-hidden group select-none">
           {memory.mediaType === 'video' ? (
-            <video src={memory.imageUrl} controls autoPlay playsInline className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain" />
-          ) : <img src={memory.imageUrl} alt={memory.title} className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain select-none" />}
+            <video key={memory.imageUrl} src={memory.imageUrl} controls autoPlay playsInline className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain" />
+          ) : (
+            <img 
+              key={memory.imageUrl}
+              src={memory.imageUrl} 
+              alt={memory.title} 
+              className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain select-none transition-all duration-300" 
+            />
+          )}
+
+          {/* On-image Quick Prev/Next buttons for mobile & mouse */}
+          {onPrev && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onPrev(); }}
+              className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white backdrop-blur-xs"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          )}
+          {onNext && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onNext(); }}
+              className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white backdrop-blur-xs"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         {/* Right / Bottom: Details, Loving Notes & Comments */}

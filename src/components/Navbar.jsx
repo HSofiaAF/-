@@ -19,6 +19,7 @@ export const Navbar = ({
   setViewMode, 
   onOpenUpload, 
   onOpenAuth, 
+  onOpenProfile,
   onOpenSettings,
   onOpenSlideshow,
   searchQuery,
@@ -183,6 +184,14 @@ export const Navbar = ({
                         {currentUser.role || 'Familia'}
                       </span>
                     </div>
+
+                    <button
+                      onClick={() => { onOpenProfile(); setShowUserMenu(false); }}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100/80 transition cursor-pointer"
+                    >
+                      <User className="w-3.5 h-3.5 text-rose-500" />
+                      <span>Mi Perfil / Apodo</span>
+                    </button>
 
                     {isOwner && (
                       <button
