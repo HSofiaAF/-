@@ -1,51 +1,100 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Heart, MessageCircle, Send, Calendar, Share2, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  X, 
+  Heart, 
+  MessageCircle, 
+  Send, 
+  Calendar, 
+  Share2, 
+  Check, 
+  ChevronLeft, 
+  ChevronRight, 
+  Edit3, 
+  Loader2 
+} from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
 import { getLikePeople } from '../utils/people';
+
+const CATEGORIES = [
+  'Momentos Especiales',
+  'Cumpleaños',
+  'Familia',
+  'Viajes y Paseos',
+  'Sonrisas',
+  'Primeros Pasos',
+  'Celebraciones',
+  'Cotidiano'
+];
 
 export const MemoryModal = ({ 
   memory, 
   onClose, 
   onLike, 
   onAddComment,
+  onUpdateMemory,
   onNext,
   onPrev,
   currentIndex,
   totalCount
 }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isOwner, canUpload } = useAuth();
   const [commentText, setCommentText] = useState('');
   const [copied, setCopied] = useState(false);
   const touchStartX = useRef(null);
 
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Update edit fields when memory changes
+  useEffect(() => {
+    if (memory) {
+      setEditTitle(memory.title || '');
+      setEditDescription(memory.description || '');
+      setEditCategory(memory.category || 'Momentos Especiales');
+      setIsEditing(false);
+    }
+  }, [memory?.id]);
+
   // Keyboard navigation (ArrowLeft, ArrowRight, Escape)
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Don't navigate while typing in inputs or textarea
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+
       if (e.key === 'ArrowRight' && onNext) {
         onNext();
       } else if (e.key === 'ArrowLeft' && onPrev) {
         onPrev();
       } else if (e.key === 'Escape') {
-        onClose();
+        if (isEditing) {
+          setIsEditing(false);
+        } else {
+          onClose();
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onNext, onPrev, onClose]);
+  }, [onNext, onPrev, onClose, isEditing]);
 
   if (!memory) return null;
 
   const hasLiked = currentUser && memory.likes?.includes(currentUser.email);
   const likePeople = getLikePeople(memory, currentUser);
+  const canEdit = Boolean(currentUser && (isOwner || canUpload));
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
   };
 
   const handleTouchEnd = (e) => {
-    if (touchStartX.current === null) return;
+    if (touchStartX.current === null || isEditing) return;
     const diff = touchStartX.current - e.changedTouches[0].clientX;
     const threshold = 50; // min swipe distance in px
 
@@ -81,6 +130,25 @@ export const MemoryModal = ({
     });
 
     setCommentText('');
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    if (!editTitle.trim() || !onUpdateMemory) return;
+
+    setIsSaving(true);
+    try {
+      await onUpdateMemory(memory.id, {
+        title: editTitle.trim(),
+        description: editDescription.trim(),
+        category: editCategory
+      });
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error guardando cambios del recuerdo:', err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleShare = () => {
@@ -147,13 +215,8 @@ export const MemoryModal = ({
 
       <div className="relative w-full max-w-5xl max-h-[92dvh] sm:max-h-[92vh] bg-white rounded-3xl sm:rounded-[28px] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row border border-white/20 animate-in zoom-in-95 duration-200">
         
-        {/* Close Button & Position Badge */}
-        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-20 flex items-center gap-2">
-          {totalCount > 1 && currentIndex !== undefined && (
-            <span className="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-bold backdrop-blur-md border border-white/20 shadow-md">
-              {currentIndex + 1} / {totalCount}
-            </span>
-          )}
+        {/* Close Button - Top Right with high z-index */}
+        <div className="absolute top-3 right-3 z-30">
           <button
             onClick={onClose}
             className="p-2 sm:p-2.5 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition cursor-pointer shadow-md"
@@ -164,8 +227,16 @@ export const MemoryModal = ({
           </button>
         </div>
 
-        {/* Left / Top: High-Res Image with Ambient Backdrop */}
+        {/* Left / Top: High-Res Image with Ambient Backdrop & Counter */}
         <div className="md:w-3/5 bg-slate-950 flex items-center justify-center relative overflow-hidden group select-none shrink-0 min-h-[180px]">
+          
+          {/* Position Badge (4 / 19) placed cleanly on image container */}
+          {totalCount > 1 && currentIndex !== undefined && (
+            <span className="absolute top-3 left-3 z-20 px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-bold backdrop-blur-md border border-white/20 shadow-md">
+              {currentIndex + 1} / {totalCount}
+            </span>
+          )}
+
           {memory.mediaType === 'video' ? (
             <video key={memory.imageUrl} src={memory.imageUrl} controls autoPlay playsInline className="w-full h-full max-h-[35vh] sm:max-h-[48vh] md:max-h-[85vh] object-contain" />
           ) : (
@@ -198,64 +269,153 @@ export const MemoryModal = ({
           )}
         </div>
 
-        {/* Right / Bottom: Details, Loving Notes & Comments */}
+        {/* Right / Bottom: Details, Edit Mode, Loving Notes & Comments */}
         <div className="md:w-2/5 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto max-h-[57vh] md:max-h-[85vh] bg-white flex-1">
           <div>
-            {/* Header: Category & Share */}
-            <div className="flex items-center justify-between mb-2 sm:mb-3">
-              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80">
+            {/* Header: Category, Edit & Share (with pr-10 so Close button never collides) */}
+            <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3 pr-10">
+              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shrink-0">
                 {memory.category}
               </span>
-              <button
-                onClick={handleShare}
-                className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition cursor-pointer px-2.5 py-1 rounded-lg hover:bg-slate-100"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-emerald-600">Copiado</span>
-                  </>
-                ) : (
-                  <>
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>Compartir</span>
-                  </>
+              
+              <div className="flex items-center gap-1.5 shrink-0">
+                {canEdit && !isEditing && (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-rose-600 transition cursor-pointer px-2.5 py-1 rounded-lg hover:bg-slate-100"
+                    title="Editar título o descripción"
+                  >
+                    <Edit3 className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Editar</span>
+                  </button>
                 )}
-              </button>
-            </div>
 
-            {/* Title */}
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-heading leading-tight">
-              {memory.title}
-            </h2>
-
-            {/* Date and Author */}
-            <div className="flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-slate-500 my-2.5 pb-3 border-b border-slate-100">
-              <span className="flex items-center gap-1 font-medium capitalize">
-                <Calendar className="w-3.5 h-3.5 text-rose-500" />
-                {formatDate(memory.date)}
-              </span>
-              <span className="flex items-center gap-1 font-semibold text-slate-700">
-                Guardado por <strong className="text-rose-600">{memory.author?.name || 'Familia'}</strong>
-              </span>
-            </div>
-
-            {/* Description */}
-            {memory.description && (
-              <p className="text-sm text-slate-700 leading-relaxed font-sans mt-2">
-                {memory.description}
-              </p>
-            )}
-
-            {/* Tags */}
-            {memory.tags && memory.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3.5 mb-5">
-                {memory.tags.map((tag, i) => (
-                  <span key={i} className="text-[11px] font-semibold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">
-                    #{tag}
-                  </span>
-                ))}
+                <button
+                  onClick={handleShare}
+                  className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition cursor-pointer px-2 py-1 rounded-lg hover:bg-slate-100"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-600">Copiado</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>Compartir</span>
+                    </>
+                  )}
+                </button>
               </div>
+            </div>
+
+            {/* Editing Mode Form */}
+            {isEditing ? (
+              <form onSubmit={handleSaveEdit} className="space-y-3 p-3.5 bg-rose-50/50 rounded-2xl border border-rose-200/70 mb-4 animate-in fade-in duration-150">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">Editar Recuerdo</span>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 mb-1">Título:</label>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    required
+                    placeholder="Título del recuerdo..."
+                    className="w-full px-3 py-2 text-base sm:text-xs bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 font-bold text-slate-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 mb-1">Categoría:</label>
+                  <select
+                    value={editCategory}
+                    onChange={(e) => setEditCategory(e.target.value)}
+                    className="w-full px-3 py-2 text-base sm:text-xs bg-white rounded-xl border border-slate-200 focus:outline-none font-semibold text-slate-800"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 mb-1">Descripción / Historia:</label>
+                  <textarea
+                    rows={3}
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder="Escribe los detalles de este momento..."
+                    className="w-full px-3 py-2 text-base sm:text-xs bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-slate-700 leading-relaxed resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    disabled={isSaving}
+                    className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-white transition cursor-pointer"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving || !editTitle.trim()}
+                    className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-xs shadow-md transition cursor-pointer disabled:opacity-50"
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Guardando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Guardar cambios</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                {/* Title */}
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-heading leading-tight pr-4">
+                  {memory.title}
+                </h2>
+
+                {/* Date and Author: "Subido por" */}
+                <div className="flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-slate-500 my-2.5 pb-3 border-b border-slate-100">
+                  <span className="flex items-center gap-1 font-medium capitalize">
+                    <Calendar className="w-3.5 h-3.5 text-rose-500" />
+                    {formatDate(memory.date)}
+                  </span>
+                  <span className="flex items-center gap-1 font-semibold text-slate-700">
+                    Subido por <strong className="text-rose-600">{memory.author?.name || 'Familia'}</strong>
+                  </span>
+                </div>
+
+                {/* Description */}
+                {memory.description && (
+                  <p className="text-sm text-slate-700 leading-relaxed font-sans mt-2">
+                    {memory.description}
+                  </p>
+                )}
+
+                {/* Tags */}
+                {memory.tags && memory.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-3.5 mb-5">
+                    {memory.tags.map((tag, i) => (
+                      <span key={i} className="text-[11px] font-semibold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
 
             {/* Reaction Bar */}

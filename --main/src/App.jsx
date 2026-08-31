@@ -6,19 +6,21 @@ import { TimelineView } from './components/TimelineView';
 import { MemoryModal } from './components/MemoryModal';
 import { UploadModal } from './components/UploadModal';
 import { AuthModal } from './components/AuthModal';
-import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { SlideshowModal } from './components/SlideshowModal';
+import { ProfileModal } from './components/ProfileModal';
 import { 
   fetchMemories, 
   createMemory, 
   toggleLikeMemory, 
   addCommentToMemory, 
-  deleteMemory 
+  deleteMemory,
+  updateMemory,
+  subscribeToPresence, 
+  updatePresence 
 } from './firebase/services';
 import { useAuth } from './context/AuthContext';
-import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Star, Calendar } from 'lucide-react';
+import { Heart, Sparkles, Image, PlusCircle, Flame, Play, Calendar } from 'lucide-react';
 import { AudioPlayer } from './components/AudioPlayer';
-import { subscribeToPresence, updatePresence } from './firebase/services';
 
 export function App() {
   const { currentUser, isOwner, canUpload, isFirebaseActive } = useAuth();
@@ -36,7 +38,7 @@ export function App() {
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
 
   const loadData = async () => {
@@ -137,6 +139,14 @@ export function App() {
     }
   };
 
+  const handleUpdateMemory = async (memoryId, updatedFields) => {
+    await updateMemory(memoryId, updatedFields);
+    setMemories(prev => prev.map(m => m.id === memoryId ? { ...m, ...updatedFields } : m));
+    if (selectedMemory && selectedMemory.id === memoryId) {
+      setSelectedMemory(prev => ({ ...prev, ...updatedFields }));
+    }
+  };
+
   const handleDelete = async (memoryId, imageUrl) => {
     if (!isOwner) return;
     await deleteMemory(memoryId, imageUrl);
@@ -172,12 +182,26 @@ export function App() {
     return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
   });
 
-  const selectedMemoryIndex = filteredMemories.findIndex((memory) => memory.id === selectedMemory?.id);
+  const currentMemoryIndex = selectedMemory 
+    ? filteredMemories.findIndex(m => m.id === selectedMemory.id)
+    : -1;
 
-  const goToSelectedMemory = (direction) => {
-    if (!filteredMemories.length || selectedMemoryIndex < 0) return;
-    const nextIndex = (selectedMemoryIndex + direction + filteredMemories.length) % filteredMemories.length;
-    setSelectedMemory(filteredMemories[nextIndex]);
+  const handleNextMemory = () => {
+    if (filteredMemories.length <= 1) return;
+    if (currentMemoryIndex >= 0 && currentMemoryIndex < filteredMemories.length - 1) {
+      setSelectedMemory(filteredMemories[currentMemoryIndex + 1]);
+    } else {
+      setSelectedMemory(filteredMemories[0]); // Loop to start
+    }
+  };
+
+  const handlePrevMemory = () => {
+    if (filteredMemories.length <= 1) return;
+    if (currentMemoryIndex > 0) {
+      setSelectedMemory(filteredMemories[currentMemoryIndex - 1]);
+    } else {
+      setSelectedMemory(filteredMemories[filteredMemories.length - 1]); // Loop to end
+    }
   };
 
   const totalLikesCount = memories.reduce((acc, m) => acc + (m.likes?.length || 0), 0);
@@ -185,35 +209,13 @@ export function App() {
   return (
     <div className="min-h-screen flex flex-col">
       
-      {/* Firebase Status Helper Banner */}
-      {!isFirebaseActive && (
-        <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs font-semibold py-2 px-4 shadow-xs">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 truncate">
-              <span className="p-1 bg-white/20 rounded-md shrink-0">
-                <Flame className="w-3.5 h-3.5 fill-white" />
-              </span>
-              <span className="truncate">
-                <strong>Modo Local / Demostración:</strong> Puedes probar subir fotos de Sofia, notas y corazones al instante.
-              </span>
-            </div>
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="shrink-0 px-3 py-1 bg-white text-rose-600 hover:bg-rose-50 rounded-full font-bold shadow-xs transition cursor-pointer"
-            >
-              Conectar Firebase
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Top Navigation */}
       <Navbar
         viewMode={viewMode}
         setViewMode={setViewMode}
         onOpenUpload={() => setIsUploadOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
         onOpenSlideshow={() => setIsSlideshowOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -384,14 +386,19 @@ export function App() {
       {/* Modals */}
       <MemoryModal
         memory={selectedMemory}
-        memories={filteredMemories}
-        currentIndex={selectedMemoryIndex}
         onClose={() => setSelectedMemory(null)}
         onLike={handleLike}
         onAddComment={handleAddComment}
-        onNext={() => goToSelectedMemory(1)}
-        onPrev={() => goToSelectedMemory(-1)}
-        currentUser={currentUser}
+        onUpdateMemory={handleUpdateMemory}
+        onNext={handleNextMemory}
+        onPrev={handlePrevMemory}
+        currentIndex={currentMemoryIndex}
+        totalCount={filteredMemories.length}
+      />
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
       />
 
       <UploadModal
@@ -403,11 +410,6 @@ export function App() {
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-      />
-
-      <FirebaseConfigModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
       />
 
       <SlideshowModal
