@@ -121,64 +121,68 @@ export const MemoryModal = ({
       {/* Click outside to close */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      {/* Floating Prev Button (Left) */}
+      {/* Floating Prev Button (Left) - Desktop only */}
       {onPrev && (
         <button
           onClick={(e) => { e.stopPropagation(); onPrev(); }}
-          className="fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 z-60 p-3 rounded-full bg-black/60 hover:bg-rose-600 text-white backdrop-blur-md shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border border-white/20"
+          className="hidden md:flex fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 z-60 p-3 rounded-full bg-black/60 hover:bg-rose-600 text-white backdrop-blur-md shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border border-white/20 items-center justify-center"
           title="Recuerdo anterior (←)"
+          aria-label="Recuerdo anterior"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
       )}
 
-      {/* Floating Next Button (Right) */}
+      {/* Floating Next Button (Right) - Desktop only */}
       {onNext && (
         <button
           onClick={(e) => { e.stopPropagation(); onNext(); }}
-          className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-60 p-3 rounded-full bg-black/60 hover:bg-rose-600 text-white backdrop-blur-md shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border border-white/20"
+          className="hidden md:flex fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-60 p-3 rounded-full bg-black/60 hover:bg-rose-600 text-white backdrop-blur-md shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border border-white/20 items-center justify-center"
           title="Recuerdo siguiente (→)"
+          aria-label="Recuerdo siguiente"
         >
           <ChevronRight className="w-6 h-6" />
         </button>
       )}
 
-      <div className="relative w-full max-w-5xl max-h-[92vh] bg-white rounded-[28px] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row border border-white/20 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-5xl max-h-[92dvh] sm:max-h-[92vh] bg-white rounded-3xl sm:rounded-[28px] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row border border-white/20 animate-in zoom-in-95 duration-200">
         
         {/* Close Button & Position Badge */}
-        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-20 flex items-center gap-2">
           {totalCount > 1 && currentIndex !== undefined && (
-            <span className="px-3 py-1 rounded-full bg-black/60 text-white text-xs font-bold backdrop-blur-md border border-white/20 shadow-md">
+            <span className="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-bold backdrop-blur-md border border-white/20 shadow-md">
               {currentIndex + 1} / {totalCount}
             </span>
           )}
           <button
             onClick={onClose}
-            className="p-2.5 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition cursor-pointer shadow-md"
+            className="p-2 sm:p-2.5 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition cursor-pointer shadow-md"
             title="Cerrar (Esc)"
+            aria-label="Cerrar modal"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Left / Top: High-Res Image with Ambient Backdrop */}
-        <div className="md:w-3/5 bg-slate-950 flex items-center justify-center relative overflow-hidden group select-none">
+        <div className="md:w-3/5 bg-slate-950 flex items-center justify-center relative overflow-hidden group select-none shrink-0 min-h-[180px]">
           {memory.mediaType === 'video' ? (
-            <video key={memory.imageUrl} src={memory.imageUrl} controls autoPlay playsInline className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain" />
+            <video key={memory.imageUrl} src={memory.imageUrl} controls autoPlay playsInline className="w-full h-full max-h-[35vh] sm:max-h-[48vh] md:max-h-[85vh] object-contain" />
           ) : (
             <img 
               key={memory.imageUrl}
               src={memory.imageUrl} 
               alt={memory.title} 
-              className="w-full h-full max-h-[48vh] md:max-h-[85vh] object-contain select-none transition-all duration-300" 
+              className="w-full h-full max-h-[35vh] sm:max-h-[48vh] md:max-h-[85vh] object-contain select-none transition-all duration-300" 
             />
           )}
 
-          {/* On-image Quick Prev/Next buttons for mobile & mouse */}
+          {/* On-image Quick Prev/Next buttons for mobile & touch */}
           {onPrev && (
             <button
               onClick={(e) => { e.stopPropagation(); onPrev(); }}
-              className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white backdrop-blur-xs"
+              className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white backdrop-blur-md border border-white/20 active:scale-90 z-10"
+              aria-label="Recuerdo anterior"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -186,7 +190,8 @@ export const MemoryModal = ({
           {onNext && (
             <button
               onClick={(e) => { e.stopPropagation(); onNext(); }}
-              className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white backdrop-blur-xs"
+              className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white backdrop-blur-md border border-white/20 active:scale-90 z-10"
+              aria-label="Recuerdo siguiente"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -194,11 +199,11 @@ export const MemoryModal = ({
         </div>
 
         {/* Right / Bottom: Details, Loving Notes & Comments */}
-        <div className="md:w-2/5 p-6 flex flex-col justify-between overflow-y-auto max-h-[48vh] md:max-h-[85vh] bg-white">
+        <div className="md:w-2/5 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto max-h-[57vh] md:max-h-[85vh] bg-white flex-1">
           <div>
             {/* Header: Category & Share */}
-            <div className="flex items-center justify-between mb-3">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80">
                 {memory.category}
               </span>
               <button
@@ -341,12 +346,13 @@ export const MemoryModal = ({
                   placeholder="Escribe una nota tierna..."
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
-                  className="flex-1 px-4 py-2.5 text-xs bg-slate-100 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
+                  className="flex-1 px-4 py-2 text-sm sm:text-xs bg-slate-100 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
                 />
                 <button
                   type="submit"
                   disabled={!commentText.trim()}
-                  className="p-2.5 rounded-full bg-rose-500 hover:bg-rose-600 disabled:opacity-40 text-white shadow-xs transition cursor-pointer"
+                  className="p-2.5 rounded-full bg-rose-500 hover:bg-rose-600 disabled:opacity-40 text-white shadow-xs transition cursor-pointer shrink-0"
+                  aria-label="Enviar nota"
                 >
                   <Send className="w-4 h-4" />
                 </button>

@@ -134,7 +134,15 @@
 @keyframes iconFloat { 0%, 100% { transform: translate3d(0, 0, 20px) rotate(-8deg); } 50% { transform: translate3d(0, -12px, 38px) rotate(8deg); } }
 
 @media (max-width: 768px) {
-  .hero-orbit { width: 210px; right: -54px; top: 18%; opacity: .55; }
+  .hero-orbit { 
+    width: 160px; 
+    right: -15px; 
+    top: 15%; 
+    opacity: .35; 
+    pointer-events: none;
+    max-width: 100%;
+    contain: layout paint;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -339,4 +347,33 @@
 .no-select {
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* ─── Mobile Optimizations (iOS / Android) ───────────────────────────────── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent iOS auto-zoom on input focus by guaranteeing 16px font on small screens */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch momentum scroll for horizontal lists */
+.scroll-touch {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* Safe area support for notch and dynamic island */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}
+
+.bottom-safe {
+  bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
 }

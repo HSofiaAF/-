@@ -115,21 +115,22 @@ export const MemoryCard = ({ memory, onSelect, onLike, onDelete }) => {
               }
             }}
             className="absolute top-3 right-3 z-10 p-2 rounded-full text-white/90 hover:text-white transition-all
-              opacity-0 group-hover:opacity-100 cursor-pointer"
+              opacity-80 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer"
             style={{
-              background: 'rgba(0,0,0,0.42)',
+              background: 'rgba(0,0,0,0.5)',
               backdropFilter: 'blur(10px)',
               border: '1px solid rgba(255,255,255,0.15)'
             }}
             title="Eliminar recuerdo"
+            aria-label="Eliminar recuerdo"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         )}
 
-        {/* Like count overlay on hover */}
+        {/* Like count overlay on hover/desktop */}
         <div
-          className="absolute bottom-3 right-3 z-10 flex items-center gap-1 px-2 py-1 rounded-full
+          className="absolute bottom-3 right-3 z-10 hidden sm:flex items-center gap-1 px-2 py-1 rounded-full
             opacity-0 group-hover:opacity-100 transition-all duration-300 text-white text-xs font-bold"
           style={{
             background: hasLiked ? 'rgba(225,29,72,0.85)' : 'rgba(0,0,0,0.45)',

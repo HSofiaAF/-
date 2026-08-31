@@ -77,14 +77,14 @@ export const AudioPlayer = () => {
 
   return (
     <div
-      className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2 no-select"
+      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end gap-2 no-select"
       style={{ fontFamily: 'var(--font-sans)' }}
     >
       {/* ── Expanded panel ── */}
       {isExpanded && (
         <div
-          className="glass-card rounded-2xl px-4 py-3 flex flex-col gap-2 animate-slideInFromTop"
-          style={{ width: 220, boxShadow: '0 8px 32px -4px rgba(244,63,94,0.18)' }}
+          className="glass-card rounded-2xl px-4 py-3 flex flex-col gap-2 animate-slideInFromTop max-w-[calc(100vw-2rem)]"
+          style={{ width: 230, boxShadow: '0 8px 32px -4px rgba(244,63,94,0.18)' }}
         >
           {/* Track info */}
           <div className="flex items-center gap-2">

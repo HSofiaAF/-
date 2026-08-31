@@ -344,3 +344,4 @@ export const ProfileModal = ({ isOpen, onClose }) => {
     </div>
   );
 };
+

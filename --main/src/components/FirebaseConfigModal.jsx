@@ -60,33 +60,34 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/70 backdrop-blur-sm">
       
-      <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/80 z-10 flex flex-col max-h-[92vh]">
+      <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/80 z-10 flex flex-col max-h-[90dvh] sm:max-h-[92vh]">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-gradient-to-r from-amber-500 to-rose-500 text-white">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100 bg-gradient-to-r from-amber-500 to-rose-500 text-white shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-white/20 backdrop-blur-md">
               <Flame className="w-5 h-5 text-amber-200" />
             </div>
             <div>
-              <h3 className="text-lg font-bold">Conectar con Firebase</h3>
-              <p className="text-xs text-amber-100">Para guardar fotos y usuarios en la nube</p>
+              <h3 className="text-base sm:text-lg font-bold">Conectar con Firebase</h3>
+              <p className="text-[11px] sm:text-xs text-amber-100">Para guardar fotos y usuarios en la nube</p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-black/20 text-white transition cursor-pointer"
+            aria-label="Cerrar modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSave} className="p-6 overflow-y-auto space-y-4 flex-1 text-xs text-slate-600">
+        <form onSubmit={handleSave} className="p-4 sm:p-6 overflow-y-auto space-y-3.5 sm:space-y-4 flex-1 text-xs text-slate-600">
           
-          <div className="p-3.5 bg-amber-50 border border-amber-200/80 rounded-2xl flex items-start gap-2.5 text-amber-800">
+          <div className="p-3 sm:p-3.5 bg-amber-50 border border-amber-200/80 rounded-2xl flex items-start gap-2.5 text-amber-800">
             <Info className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
             <div className="space-y-1">
               <p className="font-bold">¿Cómo obtener tus claves gratis?</p>
@@ -109,12 +110,12 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
               placeholder="Pega aquí el 'const firebaseConfig = { ... }' que te da Firebase..."
               value={jsonInput}
               onChange={handlePasteJson}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 font-mono text-[11px]"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 font-mono text-base sm:text-[11px]"
             />
           </div>
 
           {/* Manual inputs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
             <div>
               <label className="block font-bold text-slate-600 mb-1">apiKey</label>
               <input
@@ -122,7 +123,7 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="AIzaSy..."
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono text-base sm:text-xs"
               />
             </div>
             <div>
@@ -132,7 +133,7 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
                 placeholder="mi-album-familiar"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono text-base sm:text-xs"
               />
             </div>
             <div>
@@ -142,7 +143,7 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
                 value={authDomain}
                 onChange={(e) => setAuthDomain(e.target.value)}
                 placeholder="mi-album.firebaseapp.com"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono text-base sm:text-xs"
               />
             </div>
             <div>
@@ -152,7 +153,7 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
                 value={storageBucket}
                 onChange={(e) => setStorageBucket(e.target.value)}
                 placeholder="mi-album.appspot.com"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-mono text-base sm:text-xs"
               />
             </div>
           </div>
@@ -165,25 +166,25 @@ export const FirebaseConfigModal = ({ isOpen, onClose }) => {
           )}
 
           {/* Footer actions */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+          <div className="pt-4 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <button
               type="button"
               onClick={handleClear}
-              className="text-xs text-rose-500 hover:underline font-medium cursor-pointer"
+              className="text-xs text-rose-500 hover:underline font-medium cursor-pointer text-center sm:text-left py-1"
             >
               Restablecer a modo Demo/Local
             </button>
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-end">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold cursor-pointer"
+                className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold cursor-pointer text-xs"
               >
                 Cerrar
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold shadow-md transition cursor-pointer"
+                className="px-4 sm:px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold shadow-md transition cursor-pointer text-xs"
               >
                 Guardar y Conectar
               </button>

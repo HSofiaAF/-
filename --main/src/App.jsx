@@ -222,16 +222,17 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 overflow-hidden">
         
         {/* Welcome Hero for HSofiaAF */}
-        <section className="relative memory-hero rounded-[28px] p-6 sm:p-10 border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] mb-6 overflow-hidden">
+        <section className="relative memory-hero rounded-2xl sm:rounded-[28px] p-4 sm:p-8 lg:p-10 border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] mb-4 sm:mb-6 overflow-hidden contain-paint">
           <video
             className="hero-video"
             autoPlay
             muted
             loop
             playsInline
+            webkit-playsinline="true"
             aria-hidden="true"
             src={`${import.meta.env.BASE_URL}sofia-bailando.mp4`}
           />
@@ -241,36 +242,36 @@ export function App() {
           <div className="hero-orbit pointer-events-none" aria-hidden="true">
             <div className="hero-orbit__ring hero-orbit__ring--one" />
             <div className="hero-orbit__ring hero-orbit__ring--two" />
-            <div className="hero-orbit__core"><Heart className="w-8 h-8 fill-current" /></div>
+            <div className="hero-orbit__core"><Heart className="w-6 h-6 sm:w-8 sm:h-8 fill-current" /></div>
             <Sparkles className="hero-float hero-float--one" />
             <Heart className="hero-float hero-float--two fill-current" />
             <Heart className="hero-float hero-float--three" />
           </div>
 
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-rose-200/80 text-rose-700 font-bold text-xs uppercase tracking-wider mb-3 shadow-2xs">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 sm:px-3 rounded-full bg-white/80 border border-rose-200/80 text-rose-700 font-bold text-[10px] sm:text-xs uppercase tracking-wider mb-2.5 sm:mb-3 shadow-2xs">
+                <Sparkles className="w-3 h-3 text-amber-500" />
                 <span>El jardín de recuerdos de Sofia</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight font-heading leading-none sm:leading-tight">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight font-heading leading-tight">
                 Cada sonrisa y aventura de <span className="bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">HSofiaAF</span>
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 mt-2.5 max-w-xl font-sans leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-xl font-sans leading-relaxed">
                 Un álbum digital íntimo y privado para atesorar cada paso, risa y recuerdo inolvidable de nuestra pequeña con todo el amor familiar.
               </p>
 
               {/* Quick Stats Pills */}
-              <div className="flex flex-wrap items-center gap-3 mt-5">
-                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/80 border border-slate-200/70 text-xs font-bold text-slate-700 shadow-2xs">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-4 sm:mt-5">
+                <div className="flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl bg-white/80 border border-slate-200/70 text-[11px] sm:text-xs font-bold text-slate-700 shadow-2xs">
                   <Image className="w-3.5 h-3.5 text-rose-500" />
                   <span>{memories.length} recuerdos</span>
                 </div>
-                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/80 border border-slate-200/70 text-xs font-bold text-slate-700 shadow-2xs">
+                <div className="flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl bg-white/80 border border-slate-200/70 text-[11px] sm:text-xs font-bold text-slate-700 shadow-2xs">
                   <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
                   <span>{totalLikesCount} corazones</span>
                 </div>
-                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/80 border border-slate-200/70 text-xs font-bold text-slate-700 shadow-2xs">
+                <div className="flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl bg-white/80 border border-slate-200/70 text-[11px] sm:text-xs font-bold text-slate-700 shadow-2xs">
                   <Calendar className="w-3.5 h-3.5 text-indigo-500" />
                   <span>Desde Junio 2026</span>
                 </div>
@@ -278,23 +279,23 @@ export function App() {
             </div>
 
             {/* Quick Actions in Hero */}
-            <div className="flex flex-row sm:flex-col lg:flex-row items-center gap-3 shrink-0">
+            <div className="flex flex-row sm:flex-col lg:flex-row items-center gap-2 sm:gap-3 shrink-0">
               {memories.length > 0 && (
                 <button
                   onClick={() => setIsSlideshowOpen(true)}
-                  className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/90 hover:bg-white text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-sm hover:shadow-md transition transform active:scale-95 cursor-pointer"
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/90 hover:bg-white text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-sm hover:shadow-md transition transform active:scale-95 cursor-pointer"
                 >
-                  <Play className="w-4 h-4 text-rose-500 fill-rose-500" />
-                  <span>Ver Presentación</span>
+                  <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500 fill-rose-500" />
+                  <span>Presentación</span>
                 </button>
               )}
 
               {currentUser && canUpload && (
                 <button
                   onClick={() => setIsUploadOpen(true)}
-                  className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-rose-500/25 hover:shadow-xl hover:shadow-rose-500/35 transition transform active:scale-95 cursor-pointer"
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-rose-500/25 hover:shadow-xl hover:shadow-rose-500/35 transition transform active:scale-95 cursor-pointer"
                 >
-                  <PlusCircle className="w-4 h-4" />
+                  <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span>Subir Recuerdo</span>
                 </button>
               )}

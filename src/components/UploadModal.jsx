@@ -128,31 +128,32 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 bg-slate-950/70 backdrop-blur-sm">
       
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/80 z-10 flex flex-col max-h-[92vh]">
+      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/80 z-10 flex flex-col max-h-[90dvh] sm:max-h-[92vh]">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-gradient-to-r from-rose-50/50 via-pink-50/30 to-white">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100 bg-gradient-to-r from-rose-50/50 via-pink-50/30 to-white">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-rose-500 text-white shadow-xs">
-              <Sparkles className="w-5 h-5" />
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800">Agregar Nuevo Recuerdo</h2>
-              <p className="text-xs text-slate-500">Guarda una foto especial para siempre</p>
+              <h2 className="text-base sm:text-lg font-bold text-slate-800">Agregar Nuevo Recuerdo</h2>
+              <p className="text-[11px] sm:text-xs text-slate-500">Guarda una foto especial para siempre</p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+            aria-label="Cerrar modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Body Form */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
           
           {error && (
             <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs">
@@ -178,19 +179,19 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
             {!previewUrl ? (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-rose-200 hover:border-rose-400 rounded-2xl p-8 text-center cursor-pointer bg-rose-50/20 hover:bg-rose-50/50 transition-all flex flex-col items-center justify-center gap-2"
+                className="border-2 border-dashed border-rose-200 hover:border-rose-400 rounded-2xl p-5 sm:p-8 text-center cursor-pointer bg-rose-50/20 hover:bg-rose-50/50 transition-all flex flex-col items-center justify-center gap-2 active:scale-[0.99]"
               >
-                <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center">
-                  <UploadCloud className="w-6 h-6" />
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center">
+                  <UploadCloud className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <p className="text-sm font-semibold text-slate-700">Haz clic para subir una foto o video</p>
-                <p className="text-xs text-slate-400">JPG, PNG, WebP, HEIC, MP4 o WebM</p>
+                <p className="text-xs sm:text-sm font-semibold text-slate-700">Toca para subir foto o video</p>
+                <p className="text-[11px] sm:text-xs text-slate-400">JPG, PNG, WebP, HEIC, MP4 o WebM</p>
               </div>
             ) : (
               <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-100">
                 {compressedFile?.type?.startsWith('video/') ? (
-                  <video src={previewUrl} controls className="w-full h-56 object-cover" />
-                ) : <img src={previewUrl} alt="Vista previa" className="w-full h-56 object-cover" />}
+                  <video src={previewUrl} controls className="w-full h-44 sm:h-56 object-cover" />
+                ) : <img src={previewUrl} alt="Vista previa" className="w-full h-44 sm:h-56 object-cover" />}
                 
                 <button
                   type="button"
@@ -221,12 +222,12 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
+              className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
             />
           </div>
 
           {/* Date & Category */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                 Fecha del recuerdo
@@ -235,7 +236,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
+                className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
               />
             </div>
 
@@ -246,7 +247,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition cursor-pointer"
               >
                 {CATEGORIES.filter(c => c !== 'Todas').map(c => (
                   <option key={c} value={c}>{c}</option>
@@ -265,7 +266,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
               placeholder="Escribe lo que sentiste ese día, lo que dijo o lo especial del momento..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition resize-none"
+              className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition resize-none"
             />
           </div>
 
@@ -279,7 +280,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
               placeholder="ej: sonrisa, vacaciones, risas, parque"
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
+              className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:bg-white transition"
             />
           </div>
 

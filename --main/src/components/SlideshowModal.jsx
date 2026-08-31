@@ -10,6 +10,7 @@ export const SlideshowModal = ({ isOpen, onClose, memories = [], onLike, current
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [kenBurnsKey, setKenBurnsKey] = useState(0); // forces re-mount for animation reset
+  const touchStartX = React.useRef(null);
 
   const total = memories.length;
   const current = memories[currentIndex] || null;
@@ -23,6 +24,22 @@ export const SlideshowModal = ({ isOpen, onClose, memories = [], onLike, current
     setCurrentIndex((prev) => (prev - 1 + total) % total);
     setKenBurnsKey((k) => k + 1);
   }, [total]);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    const threshold = 45;
+    if (diff > threshold) {
+      nextSlide();
+    } else if (diff < -threshold) {
+      prevSlide();
+    }
+    touchStartX.current = null;
+  };
 
   // Auto-advance
   useEffect(() => {
@@ -79,12 +96,14 @@ export const SlideshowModal = ({ isOpen, onClose, memories = [], onLike, current
     <div
       className="fixed inset-0 z-50 flex flex-col select-none animate-fadeIn"
       style={{ background: 'rgba(5, 5, 15, 0.97)' }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* ── Top Bar ───────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 sm:px-8 pt-4 pb-2 z-20 shrink-0">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between px-3 sm:px-8 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-2 z-20 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div
-            className="px-3 py-1.5 rounded-full text-rose-300 text-xs font-bold flex items-center gap-2"
+            className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-rose-300 text-[11px] sm:text-xs font-bold flex items-center gap-1.5 sm:gap-2"
             style={{
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.1)',
@@ -92,14 +111,14 @@ export const SlideshowModal = ({ isOpen, onClose, memories = [], onLike, current
             }}
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Recuerdos de HSofiaAF</span>
+            <span>Recuerdos</span>
           </div>
-          <span className="text-white/50 text-xs font-semibold">
+          <span className="text-white/50 text-[11px] sm:text-xs font-semibold">
             {currentIndex + 1} / {total}
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Play/Pause */}
           <button
             onClick={() => setIsPlaying(!isPlaying)}
@@ -187,9 +206,9 @@ export const SlideshowModal = ({ isOpen, onClose, memories = [], onLike, current
       </div>
 
       {/* ── Bottom Info Bar ───────────────────────────────────────────────── */}
-      <div className="shrink-0 z-20 px-4 sm:px-8 py-4">
+      <div className="shrink-0 z-20 px-3 sm:px-8 pt-2 pb-[max(1rem,env(safe-area-inset-bottom,0px))]">
         <div
-          className="max-w-3xl mx-auto w-full p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          className="max-w-3xl mx-auto w-full p-3 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-4"
           style={{
             background: 'rgba(10,10,20,0.82)',
             backdropFilter: 'blur(20px)',

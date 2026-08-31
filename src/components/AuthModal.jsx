@@ -58,38 +58,39 @@ export const AuthModal = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
       style={{ background: 'rgba(15,10,5,0.75)', backdropFilter: 'blur(8px)' }}
     >
       <div
-        className="relative w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"
+        className="relative w-full max-w-md rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90dvh] sm:max-h-[92vh]"
         style={{ background: 'white', border: '1px solid rgba(255,255,255,0.8)' }}
       >
         {/* ── Gradient Header ─────────────────────────────────────────── */}
         <div
-          className="relative p-8 text-white text-center"
+          className="relative p-5 sm:p-7 text-white text-center shrink-0"
           style={{ background: 'linear-gradient(135deg, #e11d48 0%, #f43f5e 45%, #f59e0b 100%)' }}
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full transition cursor-pointer"
+            className="absolute top-3.5 right-3.5 p-2 rounded-full transition cursor-pointer"
             style={{ background: 'rgba(0,0,0,0.2)' }}
             title="Cerrar"
+            aria-label="Cerrar modal"
           >
             <X className="w-4 h-4" />
           </button>
 
           <div
-            className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center shadow-lg mb-4"
+            className="w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl flex items-center justify-center shadow-lg mb-2 sm:mb-3"
             style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}
           >
-            <Heart className="w-8 h-8 fill-white" />
+            <Heart className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
           </div>
 
-          <h3 className="text-2xl font-extrabold tracking-tight">
+          <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight">
             {tab === 'login' ? 'Bienvenido a Casa 🏠' : 'Únete a la Familia 💛'}
           </h3>
-          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
+          <p className="text-xs sm:text-sm mt-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
             {tab === 'login'
               ? 'Ingresa para ver y guardar momentos únicos'
               : 'Crea tu cuenta y empieza a compartir recuerdos'}
@@ -97,7 +98,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
 
           {/* Tab Toggle in header */}
           <div
-            className="flex mx-auto mt-5 rounded-2xl overflow-hidden text-sm font-bold"
+            className="flex mx-auto mt-3.5 sm:mt-4 rounded-2xl overflow-hidden text-xs sm:text-sm font-bold"
             style={{
               background: 'rgba(0,0,0,0.2)',
               width: 'fit-content',
@@ -107,7 +108,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={() => switchTab('login')}
-              className="px-5 py-2 transition cursor-pointer"
+              className="px-4 sm:px-5 py-1.5 sm:py-2 transition cursor-pointer"
               style={{
                 background: tab === 'login' ? 'rgba(255,255,255,0.3)' : 'transparent',
                 color: 'white',
@@ -119,7 +120,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={() => switchTab('register')}
-              className="px-5 py-2 transition cursor-pointer"
+              className="px-4 sm:px-5 py-1.5 sm:py-2 transition cursor-pointer"
               style={{
                 background: tab === 'register' ? 'rgba(255,255,255,0.3)' : 'transparent',
                 color: 'white',
@@ -132,7 +133,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* ── Body ─────────────────────────────────────────────────────── */}
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-3.5 sm:space-y-4 overflow-y-auto flex-1">
 
           {/* Alert: error */}
           {error && (
