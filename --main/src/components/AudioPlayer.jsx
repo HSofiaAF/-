@@ -6,7 +6,6 @@ import {
   SkipForward, 
   Play, 
   Pause, 
-  Music2, 
   Disc3, 
   Sparkles,
   X
@@ -44,8 +43,13 @@ export const AudioPlayer = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef(null);
+  const isPlayingRef = useRef(isPlaying);
 
   const track = TRACKS[trackIndex];
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
 
   // Sync volume + mute
   useEffect(() => {
@@ -57,12 +61,12 @@ export const AudioPlayer = () => {
   useEffect(() => {
     if (!audioRef.current) return;
     setLoadError(false);
-    const wasPlaying = isPlaying;
     audioRef.current.load();
-    if (wasPlaying) {
+    if (isPlayingRef.current) {
       audioRef.current.play().catch(() => setIsPlaying(false));
     }
   }, [trackIndex]);
+
 
   const togglePlay = (e) => {
     if (e) e.stopPropagation();

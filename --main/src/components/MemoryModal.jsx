@@ -58,7 +58,8 @@ export const MemoryModal = ({
       setEditCategory(memory.category || 'Momentos Especiales');
       setIsEditing(false);
     }
-  }, [memory?.id]);
+  }, [memory]);
+
 
   // Keyboard navigation (ArrowLeft, ArrowRight, Escape)
   useEffect(() => {

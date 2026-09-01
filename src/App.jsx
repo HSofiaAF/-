@@ -27,15 +27,11 @@ import {
   Sparkles, 
   Image as ImageIcon, 
   PlusCircle, 
-  Flame, 
-  Play, 
-  Calendar, 
   ArrowUpRight, 
   ChevronDown, 
-  Camera, 
-  Users, 
-  Star 
+  Users 
 } from 'lucide-react';
+
 
 export function App() {
   const { currentUser, isOwner, canUpload, isFirebaseActive } = useAuth();
@@ -220,8 +216,6 @@ export function App() {
       setSelectedMemory(filteredMemories[filteredMemories.length - 1]);
     }
   };
-
-  const totalLikesCount = memories.reduce((acc, m) => acc + (m.likes?.length || 0), 0);
 
   const scrollToMemories = () => {
     const el = document.getElementById('memories-section');

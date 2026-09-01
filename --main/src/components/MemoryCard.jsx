@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Calendar, Trash2, Plus, ArrowUpRight } from 'lucide-react';
+import { Heart, MessageCircle, Calendar, Trash2, Plus } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
 import { getLikePeople } from '../utils/people';
