@@ -11,6 +11,7 @@ import { SlideshowModal } from './components/SlideshowModal';
 import { ProfileModal } from './components/ProfileModal';
 import { FloatingDock } from './components/FloatingDock';
 import { AudioPlayer } from './components/AudioPlayer';
+import { CosmicBackground } from './components/CosmicBackground';
 import { 
   fetchMemories, 
   createMemory, 
@@ -229,7 +230,9 @@ export function App() {
   const highlight2 = memories[1];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0b0f17] text-slate-100 selection:bg-rose-500/30 selection:text-white pb-20">
+    <div className="min-h-screen flex flex-col bg-[#05070d] text-slate-100 selection:bg-rose-500/30 selection:text-white pb-20 relative">
+      {/* 3D Cosmic Space Background Canvas */}
+      <CosmicBackground />
       
       {/* Top Navigation */}
       <Navbar
