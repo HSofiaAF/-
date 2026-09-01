@@ -138,16 +138,16 @@ export const createMemory = async ({ title, description, date, category, tags, i
   let imageUrl = '';
   const mediaType = imageFile.type.startsWith('video/') ? 'video' : 'image';
 
-  try {
-    if (isCloudinaryConfigured) {
-      imageUrl = await uploadToCloudinary(imageFile);
-    } else if (isFirebaseConfigured && storage && db) {
-      const storageRef = ref(storage, `memories/${Date.now()}_${imageFile.name || (mediaType === 'video' ? 'video.mp4' : 'foto.jpg')}`);
-      const snapshot = await withTimeout(uploadBytes(storageRef, imageFile), 45000, 'subir la foto');
-      imageUrl = await withTimeout(getDownloadURL(snapshot.ref), 30000, 'obtener la foto publicada');
-    }
+  if (isFirebaseConfigured && db) {
+    try {
+      if (isCloudinaryConfigured) {
+        imageUrl = await uploadToCloudinary(imageFile);
+      } else if (storage) {
+        const storageRef = ref(storage, `memories/${Date.now()}_${imageFile.name || (mediaType === 'video' ? 'video.mp4' : 'foto.jpg')}`);
+        const snapshot = await withTimeout(uploadBytes(storageRef, imageFile), 45000, 'subir la foto');
+        imageUrl = await withTimeout(getDownloadURL(snapshot.ref), 30000, 'obtener la foto publicada');
+      }
 
-    if (isFirebaseConfigured && db) {
       const newDoc = {
         title,
         description,
@@ -165,44 +165,21 @@ export const createMemory = async ({ title, description, date, category, tags, i
 
       const docRef = await withTimeout(addDoc(collection(db, 'memories'), newDoc), 30000, 'guardar el recuerdo');
       return { id: docRef.id, ...newDoc };
-    }
-  } catch (error) {
-    console.error('[Storage upload]', {
-      code: error?.code || 'client/timeout',
-      message: error?.message || error,
-      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-      cloudinaryConfigured: isCloudinaryConfigured,
-      storageConfigured: Boolean(storage),
-      databaseConfigured: Boolean(db)
-    });
+    } catch (error) {
+      console.error('[Storage upload]', {
+        code: error?.code || 'client/timeout',
+        message: error?.message || error,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        cloudinaryConfigured: isCloudinaryConfigured,
+        storageConfigured: Boolean(storage),
+        databaseConfigured: Boolean(db)
+      });
 
-    if (isFirebaseConfigured && db) {
       if (error?.code === 'permission-denied') {
         throw new Error('No tienes permiso para subir recuerdos. Pide al propietario que añada tu UID en authorizedUsers.');
       }
       throw error;
     }
-
-    const base64Url = await readFileAsDataUrl(imageFile);
-    const newMemory = {
-      id: 'mem-' + Date.now(),
-      title,
-      description,
-      date,
-      category: category || 'Momentos Especiales',
-      tags: tags || [],
-      imageUrl: base64Url,
-      mediaType,
-      author,
-      likes: [],
-      comments: [],
-      createdAt: new Date().toISOString()
-    };
-
-    const existing = getLocalMemories();
-    const updated = [newMemory, ...existing];
-    saveLocalMemories(updated);
-    return newMemory;
   }
 
   // Modo local (Convertir a Data URL para previsualizar localmente)

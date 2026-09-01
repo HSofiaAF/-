@@ -2,7 +2,7 @@ import React from 'react';
 import { Calendar, Heart, MessageCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export const TimelineView = ({ memories, onSelect }) => {
+export const TimelineView = ({ memories, onSelect, onLike }) => {
   const { currentUser } = useAuth();
 
   const grouped = memories.reduce((acc, memory) => {
@@ -97,10 +97,17 @@ export const TimelineView = ({ memories, onSelect }) => {
                       )}
 
                       <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/10 text-xs">
-                        <div className="flex items-center gap-1 font-bold text-rose-400 text-[11px]">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onLike) onLike(mem.id);
+                          }}
+                          className="flex items-center gap-1 font-bold text-rose-400 text-[11px] hover:scale-105 active:scale-95 transition-transform"
+                        >
                           <Heart className={`w-3.5 h-3.5 ${hasLiked ? 'fill-rose-400' : ''}`} />
                           <span>{mem.likes?.length || 0}</span>
-                        </div>
+                        </button>
                         <div className="flex items-center gap-1 text-slate-400 font-semibold text-[11px]">
                           <MessageCircle className="w-3.5 h-3.5" />
                           <span>{mem.comments?.length || 0}</span>
