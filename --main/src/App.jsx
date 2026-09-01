@@ -297,10 +297,10 @@ export function App() {
               <div className="flex flex-wrap items-center gap-3 mt-6 sm:mt-8">
                 <button
                   onClick={scrollToMemories}
-                  className="flex items-center gap-2 px-5 sm:px-7 py-3 rounded-full bg-white text-slate-950 font-bold text-xs sm:text-sm hover:bg-rose-100 transition transform active:scale-95 shadow-xl cursor-pointer"
+                  className="flex items-center gap-2 px-5 sm:px-7 py-3 rounded-full bg-gradient-to-r from-pink-200 via-rose-100 to-amber-100 text-slate-950 font-bold text-xs sm:text-sm hover:opacity-95 transition transform active:scale-95 shadow-[0_8px_24px_rgba(244,114,182,0.35)] cursor-pointer"
                 >
                   <span>EXPLORAR RECUERDOS</span>
-                  <ArrowUpRight className="w-4 h-4" />
+                  <ArrowUpRight className="w-4 h-4 text-slate-900" />
                 </button>
 
                 {currentUser && canUpload ? (
