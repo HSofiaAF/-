@@ -328,3 +328,36 @@ export const deleteMemory = async (memoryId, imageUrl) => {
   saveLocalMemories(filtered);
   return true;
 };
+
+// 6. Actualizar / Editar título y descripción de un recuerdo
+export const updateMemory = async (memoryId, { title, description, category, date }) => {
+  const updates = {};
+  if (title !== undefined) updates.title = title.trim();
+  if (description !== undefined) updates.description = description.trim();
+  if (category !== undefined) updates.category = category;
+  if (date !== undefined) updates.date = date;
+  updates.updatedAt = new Date().toISOString();
+
+  if (isFirebaseConfigured && db && !memoryId.startsWith('mem-')) {
+    try {
+      const memoryRef = doc(db, 'memories', memoryId);
+      await updateDoc(memoryRef, updates);
+      return { id: memoryId, ...updates };
+    } catch (error) {
+      console.error('Error updating memory in Firebase:', error);
+      throw error;
+    }
+  }
+
+  // Modo Local
+  const existing = getLocalMemories();
+  const index = existing.findIndex(m => m.id === memoryId);
+  if (index !== -1) {
+    existing[index] = { ...existing[index], ...updates };
+    saveLocalMemories(existing);
+    return existing[index];
+  }
+  return null;
+};
+
+
