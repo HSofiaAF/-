@@ -545,7 +545,7 @@ export function App() {
               Con todo nuestro amor
             </span>
             <h4 className="text-xl sm:text-2xl font-black font-editorial text-white mb-4">
-              Para Sofia Álvarez Flores
+              Para Sofia Montesinos Quispe
             </h4>
 
             {/* Framed Mini Portrait (Slide 9/9 style) */}
