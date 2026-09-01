@@ -16,9 +16,6 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout código
@@ -28,10 +25,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Instalar dependencias
-        run: npm ci
+        run: npm install
 
       - name: Construir proyecto
         env:
@@ -45,20 +41,10 @@ jobs:
           VITE_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET }}
         run: npm run build
 
-      - name: Desplegar en rama gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Publicar en rama gh-pages y sofiaaf.live
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: dist
-          branch: gh-pages
-
-      - name: Configurar Pages
-        uses: actions/configure-pages@v4
-
-      - name: Subir artefacto de Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
-
-      - name: Desplegar en GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          cname: sofiaaf.live
