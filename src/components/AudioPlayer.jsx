@@ -1,23 +1,37 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Music, Volume2, VolumeX, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  Volume2, 
+  VolumeX, 
+  SkipBack, 
+  SkipForward, 
+  Play, 
+  Pause, 
+  Music2, 
+  Disc3, 
+  Sparkles,
+  X
+} from 'lucide-react';
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Free-to-use ambient music tracks (from pixabay.com CC0 public domain)
-// ──────────────────────────────────────────────────────────────────────────────
 const TRACKS = [
   {
-    title: 'Melodía de cuna',
+    title: 'Melodía de Cuna',
+    artist: 'Para Sofia con amor',
     mood: '🌙',
+    cover: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300&auto=format&fit=crop&q=80',
     url: 'https://cdn.pixabay.com/audio/2024/02/21/audio_0e6f2b9c36.mp3'
   },
   {
-    title: 'Tarde en familia',
+    title: 'Tarde en Familia',
+    artist: 'Momentos inolvidables',
     mood: '☀️',
+    cover: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=300&auto=format&fit=crop&q=80',
     url: 'https://cdn.pixabay.com/audio/2023/09/28/audio_3d2a9b05ea.mp3'
   },
   {
-    title: 'Momento mágico',
+    title: 'Destellos de Alegría',
+    artist: 'Risas de nuestra pequeña',
     mood: '✨',
+    cover: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&auto=format&fit=crop&q=80',
     url: 'https://cdn.pixabay.com/audio/2022/10/31/audio_84a1cdb4f5.mp3'
   }
 ];
@@ -26,7 +40,7 @@ export const AudioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
-  const [volume, setVolume] = useState(0.35);
+  const [volume, setVolume] = useState(0.4);
   const [isExpanded, setIsExpanded] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef(null);
@@ -48,10 +62,10 @@ export const AudioPlayer = () => {
     if (wasPlaying) {
       audioRef.current.play().catch(() => setIsPlaying(false));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackIndex]);
 
-  const togglePlay = () => {
+  const togglePlay = (e) => {
+    if (e) e.stopPropagation();
     if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
@@ -67,88 +81,109 @@ export const AudioPlayer = () => {
     }
   };
 
-  const prevTrack = () => {
+  const prevTrack = (e) => {
+    if (e) e.stopPropagation();
     setTrackIndex((i) => (i - 1 + TRACKS.length) % TRACKS.length);
   };
 
-  const nextTrack = () => {
+  const nextTrack = (e) => {
+    if (e) e.stopPropagation();
     setTrackIndex((i) => (i + 1) % TRACKS.length);
   };
 
   return (
     <div
-      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end gap-2 no-select"
+      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end gap-2.5 no-select"
       style={{ fontFamily: 'var(--font-sans)' }}
     >
-      {/* ── Expanded panel ── */}
+      {/* ── Slide 7/9 Editorial Music Card ── */}
       {isExpanded && (
         <div
-          className="glass-card rounded-2xl px-4 py-3 flex flex-col gap-2 animate-slideInFromTop max-w-[calc(100vw-2rem)]"
-          style={{ width: 230, boxShadow: '0 8px 32px -4px rgba(244,63,94,0.18)' }}
+          className="relative rounded-3xl p-4 flex flex-col gap-3.5 animate-slideInFromTop max-w-[calc(100vw-2rem)] w-[270px] sm:w-[290px] text-white overflow-hidden border border-white/20 bg-slate-950/85 backdrop-blur-2xl shadow-[0_16px_50px_rgba(0,0,0,0.7)]"
         >
-          {/* Track info */}
-          <div className="flex items-center gap-2">
-            <span className="text-lg">{track.mood}</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-slate-800 truncate">{track.title}</p>
-              <p className="text-[10px] text-slate-400">
-                {trackIndex + 1}/{TRACKS.length} · Música ambiental
-              </p>
+          {/* Subtle Ambient Glow */}
+          <div className="absolute -top-12 -right-12 w-28 h-28 bg-rose-500/20 rounded-full blur-2xl pointer-events-none" />
+
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-bold text-rose-300 uppercase tracking-wider border border-white/10">
+              <Sparkles className="w-3 h-3 text-amber-400" />
+              <span>Música Ambiental</span>
             </div>
+            <button
+              onClick={() => setIsExpanded(false)}
+              className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+              title="Minimizar reproductor"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* Track navigation */}
-          <div className="flex items-center justify-between gap-1">
-            <button
-              onClick={prevTrack}
-              className="p-1.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
-              title="Pista anterior"
-            >
-              <ChevronLeft className="w-3.5 h-3.5 text-slate-500" />
-            </button>
-
-            {/* Playing bars or paused icon */}
-            <div className="flex items-end gap-[3px] h-5">
-              {isPlaying ? (
-                <>
-                  <div className="w-1 bg-rose-500 rounded-full bar-1" style={{ height: '100%' }} />
-                  <div className="w-1 bg-pink-500 rounded-full bar-2" style={{ height: '100%' }} />
-                  <div className="w-1 bg-amber-500 rounded-full bar-3" style={{ height: '100%' }} />
-                  <div className="w-1 bg-rose-400 rounded-full bar-4" style={{ height: '100%' }} />
-                </>
-              ) : (
-                <div className="flex items-end gap-[3px] h-5 opacity-30">
-                  {[0.4,0.7,0.5,0.4].map((h, i) => (
-                    <div
-                      key={i}
-                      className="w-1 bg-slate-400 rounded-full"
-                      style={{ height: `${h * 100}%` }}
-                    />
-                  ))}
+          {/* Album Cover & Track Details */}
+          <div className="flex items-center gap-3">
+            <div className="relative w-14 h-14 rounded-2xl overflow-hidden shadow-lg border border-white/20 shrink-0 bg-slate-800">
+              <img 
+                src={track.cover} 
+                alt={track.title} 
+                className={`w-full h-full object-cover transition-transform duration-700 ${isPlaying ? 'scale-110' : 'scale-100 opacity-80'}`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              {isPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Disc3 className="w-6 h-6 text-white/80 animate-spin-smooth" />
                 </div>
               )}
             </div>
 
+            <div className="flex-1 min-w-0">
+              <h4 className="text-sm font-bold text-white truncate font-editorial tracking-tight">{track.title}</h4>
+              <p className="text-[11px] text-slate-400 truncate">{track.artist}</p>
+              <span className="text-[10px] text-rose-400/90 font-medium">{trackIndex + 1} de {TRACKS.length} canciones</span>
+            </div>
+          </div>
+
+          {/* Playback Controls (Slide 7/9 style) */}
+          <div className="flex items-center justify-center gap-4 pt-1">
+            <button
+              onClick={prevTrack}
+              className="p-2 rounded-full text-slate-300 hover:text-white hover:bg-white/10 transition active:scale-90 cursor-pointer"
+              title="Canción anterior"
+            >
+              <SkipBack className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={togglePlay}
+              className="p-3 rounded-full bg-white text-slate-950 hover:bg-rose-100 hover:text-rose-600 shadow-md transition transform active:scale-90 cursor-pointer"
+              title={isPlaying ? 'Pausar' : 'Reproducir'}
+            >
+              {isPlaying ? (
+                <Pause className="w-4 h-4 fill-current" />
+              ) : (
+                <Play className="w-4 h-4 fill-current translate-x-0.5" />
+              )}
+            </button>
+
             <button
               onClick={nextTrack}
-              className="p-1.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
-              title="Siguiente pista"
+              className="p-2 rounded-full text-slate-300 hover:text-white hover:bg-white/10 transition active:scale-90 cursor-pointer"
+              title="Siguiente canción"
             >
-              <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+              <SkipForward className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Volume slider */}
-          <div className="flex items-center gap-2">
+          {/* Volume and Mute row */}
+          <div className="flex items-center gap-2 pt-2 border-t border-white/10">
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-1 cursor-pointer"
+              className="p-1 text-slate-400 hover:text-white transition cursor-pointer"
               title={isMuted ? 'Activar sonido' : 'Silenciar'}
             >
               {isMuted ? (
-                <VolumeX className="w-3.5 h-3.5 text-slate-400" />
+                <VolumeX className="w-4 h-4 text-rose-400" />
               ) : (
-                <Volume2 className="w-3.5 h-3.5 text-rose-400" />
+                <Volume2 className="w-4 h-4 text-slate-300" />
               )}
             </button>
             <input
@@ -162,59 +197,47 @@ export const AudioPlayer = () => {
                 setVolume(v);
                 if (isMuted && v > 0) setIsMuted(false);
               }}
-              className="flex-1 h-1.5 accent-rose-500 cursor-pointer"
+              className="flex-1 h-1 bg-white/20 rounded-full accent-rose-500 cursor-pointer"
               style={{ accentColor: '#f43f5e' }}
             />
           </div>
 
           {loadError && (
-            <p className="text-[10px] text-amber-600 text-center">
-              ⚠️ Prueba con otra pista
+            <p className="text-[10px] text-amber-300 text-center">
+              ⚠️ Intentando conectar pista...
             </p>
           )}
         </div>
       )}
 
-      {/* ── Main floating button ── */}
+      {/* ── Floating Circular Mute / Sound Toggle Button (Slide 7/9) ── */}
       <button
         onClick={() => {
           if (!isExpanded) {
             setIsExpanded(true);
+            if (!isPlaying) togglePlay();
           } else {
             togglePlay();
           }
         }}
         onContextMenu={(e) => { e.preventDefault(); setIsExpanded(!isExpanded); }}
-        title={isExpanded ? (isPlaying ? 'Pausar música' : 'Reproducir música') : 'Música ambiental'}
-        className="relative w-12 h-12 rounded-full text-white flex items-center justify-center transition active:scale-90 cursor-pointer shadow-xl"
-        style={{
-          background: isPlaying
-            ? 'linear-gradient(135deg, #f43f5e, #ec4899)'
-            : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-          boxShadow: isPlaying
-            ? '0 4px 20px rgba(244,63,94,0.45)'
-            : '0 4px 20px rgba(99,102,241,0.35)'
-        }}
+        title={isExpanded ? (isPlaying ? 'Pausar música' : 'Reproducir música') : 'Abrir música ambiental'}
+        className="relative w-12 h-12 rounded-full text-white flex items-center justify-center transition-all transform active:scale-90 cursor-pointer border border-white/25 bg-slate-900/85 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
       >
-        {/* Pulse ring when playing */}
         {isPlaying && (
           <span
-            className="absolute inset-0 rounded-full animate-ping"
+            className="absolute inset-0 rounded-full animate-ping pointer-events-none"
             style={{
-              background: 'rgba(244,63,94,0.25)',
-              animationDuration: '2s'
+              background: 'rgba(244,63,94,0.3)',
+              animationDuration: '2.5s'
             }}
           />
         )}
 
         {isPlaying ? (
-          <div className="flex items-end gap-[2px] h-5">
-            <div className="w-[3px] bg-white rounded-full bar-1" style={{ height: '100%' }} />
-            <div className="w-[3px] bg-white rounded-full bar-2" style={{ height: '100%' }} />
-            <div className="w-[3px] bg-white rounded-full bar-3" style={{ height: '100%' }} />
-          </div>
+          <Volume2 className="w-5 h-5 text-rose-400 animate-pulse" />
         ) : (
-          <Music className="w-5 h-5" />
+          <VolumeX className="w-5 h-5 text-slate-400" />
         )}
       </button>
 
