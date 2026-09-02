@@ -172,8 +172,8 @@ export const CosmicBackground = () => {
       const deltaTime = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
 
-      // Auto gentle cosmic spin
-      autoRotation += 0.002;
+      // Auto gentle cosmic spin (frame-rate independent)
+      autoRotation += 0.12 * deltaTime;
 
       // Smooth camera interpolation
       currentRotX += (targetRotX - currentRotX) * 0.04;
